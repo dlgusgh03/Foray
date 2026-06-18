@@ -58,15 +58,112 @@ public class Board
         return cell.IsWalkable();
     }
 
-    //public bool IsOccupied(BoardPosition position)
-    //{
-    //    BoardCell cell = GetCell(position);
+    public bool IsOccupied(BoardPosition position)
+    {
+        BoardCell cell = GetCell(position);
 
-    //    if (cell == null)
-    //    {
-    //        return false;
-    //    }
+        if (cell == null)
+        {
+            return false;
+        }
 
-    //    return cell.IsOccupied();
-    //}
+        return cell.IsOccupied();
+    }
+
+    public Piece GetPiece(BoardPosition position)
+    {
+        BoardCell cell = GetCell(position);
+
+        if (cell == null)
+        {
+            return null;
+        }
+
+        return cell.Piece;
+    }
+
+    public bool PlacePiece(Piece piece, BoardPosition position)
+    {
+        if (piece == null)
+        {
+            return false;
+        }
+
+        BoardCell cell = GetCell(position);
+
+        if (cell == null)
+        {
+            return false;
+        }
+
+        if (!cell.IsWalkable())
+        {
+            return false;
+        }
+
+        if (cell.IsOccupied())
+        {
+            return false;
+        }
+
+        cell.SetPiece(piece);
+        piece.MoveTo(position);
+
+        return true;
+    }
+
+    public Piece RemovePiece(BoardPosition position)
+    {
+        BoardCell cell = GetCell(position);
+
+        if (cell == null)
+        {
+            return null;
+        }
+
+        Piece piece = cell.Piece;
+
+        if (piece == null)
+        {
+            return null;
+        }
+
+        cell.ClearPiece();
+
+        return piece;
+    }
+
+    public bool MovePiece(BoardPosition from, BoardPosition to)
+    {
+        BoardCell fromCell = GetCell(from);
+        BoardCell toCell = GetCell(to);
+
+        if (fromCell == null || toCell == null)
+        {
+            return false;
+        }
+
+        if (!fromCell.IsOccupied())
+        {
+            return false;
+        }
+
+        if (!toCell.IsWalkable())
+        {
+            return false;
+        }
+
+        if (toCell.IsOccupied())
+        {
+            return false;
+        }
+
+        Piece piece = fromCell.Piece;
+
+        fromCell.ClearPiece();
+        toCell.SetPiece(piece);
+        piece.MoveTo(to);
+
+        return true;
+    }
 }

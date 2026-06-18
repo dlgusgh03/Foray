@@ -6,19 +6,21 @@ public class BoardDebugRunner : MonoBehaviour
     {
         Board board = new Board(9, 10);
 
-        Debug.Log($"Board created. Width: {board.Width}, Height: {board.Height}");
+        BoardPosition start = new BoardPosition(4, 0);
+        BoardPosition target = new BoardPosition(4, 1);
 
-        BoardPosition validPosition = new BoardPosition(0, 0);
-        BoardPosition invalidPosition = new BoardPosition(10, 10);
+        Piece king = new Piece(PieceType.King, PieceOwner.Player, start);
 
-        Debug.Log($"(0, 0) inside? {board.IsInside(validPosition)}");
-        Debug.Log($"(10, 10) inside? {board.IsInside(invalidPosition)}");
+        bool placed = board.PlacePiece(king, start);
+        Debug.Log($"Placed: {placed}");
+        Debug.Log($"Before move: {king}");
 
-        BoardCell cell = board.GetCell(validPosition);
+        bool moved = board.MovePiece(start, target);
+        Debug.Log($"Moved: {moved}");
 
-        if (cell != null)
-        {
-            Debug.Log($"Cell found at {cell.Position}");
-        }
+        Debug.Log($"Start occupied: {board.IsOccupied(start)}");
+        Debug.Log($"Target occupied: {board.IsOccupied(target)}");
+        Debug.Log($"Piece at target: {board.GetPiece(target)}");
+        Debug.Log($"After move: {king}");
     }
 }

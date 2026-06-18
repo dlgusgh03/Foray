@@ -1,4 +1,4 @@
-class Piece
+public class Piece
 {
     private PieceType _type;
     private PieceOwner _owner;
