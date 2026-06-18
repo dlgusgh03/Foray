@@ -4,48 +4,21 @@ public class BoardDebugRunner : MonoBehaviour
 {
     private void Start()
     {
-        Debug.Log("=== Board Debug Started ===");
+        Board board = new Board(9, 10);
 
-        TestBoardPosition();
-        TestBoardCell();
+        Debug.Log($"Board created. Width: {board.Width}, Height: {board.Height}");
 
-        Debug.Log("=== Board Debug Completed ===");
-    }
+        BoardPosition validPosition = new BoardPosition(0, 0);
+        BoardPosition invalidPosition = new BoardPosition(10, 10);
 
-    private void TestBoardPosition()
-    {
-        Debug.Log("--- BoardPosition Test ---");
+        Debug.Log($"(0, 0) inside? {board.IsInside(validPosition)}");
+        Debug.Log($"(10, 10) inside? {board.IsInside(invalidPosition)}");
 
-        BoardPosition positionA = new BoardPosition(4, 5);
-        BoardPosition positionB = positionA.Add(1, 0);
-        BoardPosition positionC = new BoardPosition(4, 5);
+        BoardCell cell = board.GetCell(validPosition);
 
-        Debug.Log($"Position A: {positionA}");
-        Debug.Log($"Position B: {positionB}");
-        Debug.Log($"Position C: {positionC}");
-
-        Debug.Log($"A equals B: {positionA.Equals(positionB)}");
-        Debug.Log($"A equals C: {positionA.Equals(positionC)}");
-    }
-
-    private void TestBoardCell()
-    {
-        Debug.Log("--- BoardCell Test ---");
-
-        BoardPosition position = new BoardPosition(4, 5);
-        BoardCell cell = new BoardCell(position);
-
-        Debug.Log($"Cell created: {cell}");
-        Debug.Log($"Cell position: {cell.Position}");
-        Debug.Log($"Cell blocked: {cell.IsBlocked}");
-        Debug.Log($"Cell walkable: {cell.IsWalkable()}");
-
-        cell.SetBlocked(true);
-
-        Debug.Log("Cell blocked state changed to true.");
-
-        Debug.Log($"Cell after blocked: {cell}");
-        Debug.Log($"Cell blocked: {cell.IsBlocked}");
-        Debug.Log($"Cell walkable: {cell.IsWalkable()}");
+        if (cell != null)
+        {
+            Debug.Log($"Cell found at {cell.Position}");
+        }
     }
 }

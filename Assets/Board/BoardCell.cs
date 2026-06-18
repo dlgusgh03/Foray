@@ -1,4 +1,4 @@
-class BoardCell
+public class BoardCell
 {
     private BoardPosition _position;
     private bool _isBlocked;
