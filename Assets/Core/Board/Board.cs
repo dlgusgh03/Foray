@@ -166,4 +166,41 @@ public class Board
 
         return true;
     }
+
+    public Piece CapturePiece(BoardPosition from, BoardPosition target)
+    {
+        BoardCell fromCell = GetCell(from);
+        BoardCell targetCell = GetCell(target);
+
+        if (fromCell == null || targetCell == null)
+        {
+            return null;
+        }
+
+        if (!fromCell.IsOccupied())
+        {
+            return null;
+        }
+
+        if (!targetCell.IsOccupied())
+        {
+            return null;
+        }
+
+        Piece attacker = fromCell.Piece;
+        Piece capturedPiece = targetCell.Piece;
+
+        if (attacker.Owner == capturedPiece.Owner)
+        {
+            return null;
+        }
+
+        capturedPiece.Kill();
+
+        fromCell.ClearPiece();
+        targetCell.SetPiece(attacker);
+        attacker.MoveTo(target);
+
+        return capturedPiece;
+    }
 }

@@ -6,21 +6,25 @@ public class BoardDebugRunner : MonoBehaviour
     {
         Board board = new Board(9, 10);
 
-        BoardPosition start = new BoardPosition(4, 0);
-        BoardPosition target = new BoardPosition(4, 1);
+        BoardPosition attackerPosition = new BoardPosition(4, 0);
+        BoardPosition targetPosition = new BoardPosition(4, 1);
 
-        Piece king = new Piece(PieceType.King, PieceOwner.Player, start);
+        Piece playerKing = new Piece(PieceType.King, PieceOwner.Player, attackerPosition);
+        //Piece enemySoldier = new Piece(PieceType.Soldier, PieceOwner.Enemy, targetPosition);
+        Piece enemySoldier = new Piece(PieceType.Soldier, PieceOwner.Player, targetPosition);
 
-        bool placed = board.PlacePiece(king, start);
-        Debug.Log($"Placed: {placed}");
-        Debug.Log($"Before move: {king}");
+        board.PlacePiece(playerKing, attackerPosition);
+        board.PlacePiece(enemySoldier, targetPosition);
 
-        bool moved = board.MovePiece(start, target);
-        Debug.Log($"Moved: {moved}");
+        Debug.Log($"Before capture attacker: {playerKing}");
+        Debug.Log($"Before capture target: {enemySoldier}");
 
-        Debug.Log($"Start occupied: {board.IsOccupied(start)}");
-        Debug.Log($"Target occupied: {board.IsOccupied(target)}");
-        Debug.Log($"Piece at target: {board.GetPiece(target)}");
-        Debug.Log($"After move: {king}");
+        Piece capturedPiece = board.CapturePiece(attackerPosition, targetPosition);
+
+        Debug.Log($"Captured: {capturedPiece}");
+        Debug.Log($"Attacker after capture: {playerKing}");
+        Debug.Log($"Target occupied: {board.IsOccupied(targetPosition)}");
+        Debug.Log($"Piece at target: {board.GetPiece(targetPosition)}");
+        Debug.Log($"Captured piece alive: {enemySoldier.IsAlive}");
     }
 }
