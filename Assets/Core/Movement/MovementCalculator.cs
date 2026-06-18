@@ -20,7 +20,7 @@ public static class MovementCalculator
                 return GetKingMovablePositions(board, piece);
 
             case PieceType.Soldier:
-                return new List<BoardPosition>();
+                return GetSoldierMovablePositions(board, piece);
 
             case PieceType.Chariot:
                 return new List<BoardPosition>();
@@ -59,6 +59,30 @@ public static class MovementCalculator
                 TryAddPosition(movablePositions, board, piece, target);
             }
         }
+        return movablePositions;
+    }
+
+    private static List<BoardPosition> GetSoldierMovablePositions(Board board, Piece piece)
+    {
+        List<BoardPosition> movablePositions = new List<BoardPosition>();
+
+        if (board == null || piece == null)
+        {
+            return movablePositions;
+        }
+
+        BoardPosition position = piece.Position;
+
+        int forwardY = piece.Owner == PieceOwner.Player ? 1 : -1;
+
+        BoardPosition forward = position.Add(0, forwardY);
+        BoardPosition left = position.Add(-1, 0);
+        BoardPosition right = position.Add(1, 0);
+
+        TryAddPosition(movablePositions, board, piece, forward);
+        TryAddPosition(movablePositions, board, piece, left);
+        TryAddPosition(movablePositions, board, piece, right);
+
         return movablePositions;
     }
 

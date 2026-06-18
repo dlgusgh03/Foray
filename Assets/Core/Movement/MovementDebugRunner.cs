@@ -13,6 +13,13 @@ public class MovementDebugRunner : MonoBehaviour
         TestKingCanCaptureEnemy();
         TestKingBlockedByObstacle();
 
+        TestPlayerSoldierMoveFromCenter();
+        TestEnemySoldierMoveFromCenter();
+        TestSoldierMoveFromEdge();
+        TestSoldierBlockedByAlly();
+        TestSoldierCanCaptureEnemy();
+        TestSoldierBlockedByObstacle();
+
         Debug.Log("===== Movement Debug End =====");
     }
 
@@ -142,5 +149,142 @@ public class MovementDebugRunner : MonoBehaviour
         {
             Debug.Log($"[{i}] {positions[i]}");
         }
+    }
+
+    private void TestPlayerSoldierMoveFromCenter()
+    {
+        Debug.Log("[Test 6] Player Soldier move from center");
+
+        Board board = new Board(5, 5);
+
+        Piece soldier = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        board.PlacePiece(soldier, soldier.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, soldier);
+
+        PrintPositions("Expected count: 3, should include (2, 3), (1, 2), (3, 2)", positions);
+    }
+
+    private void TestEnemySoldierMoveFromCenter()
+    {
+        Debug.Log("[Test 7] Enemy Soldier move from center");
+
+        Board board = new Board(5, 5);
+
+        Piece soldier = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Enemy,
+            new BoardPosition(2, 2)
+        );
+
+        board.PlacePiece(soldier, soldier.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, soldier);
+
+        PrintPositions("Expected count: 3, should include (2, 1), (1, 2), (3, 2)", positions);
+    }
+
+    private void TestSoldierMoveFromEdge()
+    {
+        Debug.Log("[Test 8] Player Soldier move from edge");
+
+        Board board = new Board(5, 5);
+
+        Piece soldier = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(0, 0)
+        );
+
+        board.PlacePiece(soldier, soldier.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, soldier);
+
+        PrintPositions("Expected count: 2, should include (0, 1), (1, 0)", positions);
+    }
+
+    private void TestSoldierBlockedByAlly()
+    {
+        Debug.Log("[Test 9] Soldier blocked by ally");
+
+        Board board = new Board(5, 5);
+
+        Piece soldier = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        Piece ally = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(soldier, soldier.Position);
+        board.PlacePiece(ally, ally.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, soldier);
+
+        PrintPositions("Expected count: 2, should NOT include (2, 3)", positions);
+    }
+
+    private void TestSoldierCanCaptureEnemy()
+    {
+        Debug.Log("[Test 10] Soldier can capture enemy");
+
+        Board board = new Board(5, 5);
+
+        Piece soldier = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        Piece enemy = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Enemy,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(soldier, soldier.Position);
+        board.PlacePiece(enemy, enemy.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, soldier);
+
+        PrintPositions("Expected count: 3, should include (2, 3)", positions);
+    }
+
+    private void TestSoldierBlockedByObstacle()
+    {
+        Debug.Log("[Test 11] Soldier blocked by obstacle");
+
+        Board board = new Board(5, 5);
+
+        Piece soldier = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        board.PlacePiece(soldier, soldier.Position);
+
+        BoardCell blockedCell = board.GetCell(new BoardPosition(2, 3));
+        blockedCell.SetBlocked(true);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, soldier);
+
+        PrintPositions("Expected count: 2, should NOT include (2, 3)", positions);
     }
 }
