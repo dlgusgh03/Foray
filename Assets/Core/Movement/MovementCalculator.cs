@@ -29,7 +29,7 @@ public static class MovementCalculator
                 return GetHorseMovablePositions(board, piece);
 
             case PieceType.Cannon:
-                return new List<BoardPosition>();
+                return GetCannonMovablePositions(board, piece);
 
             default:
                 return new List<BoardPosition>();
@@ -221,5 +221,92 @@ public static class MovementCalculator
         }
 
         return false;
+    }
+
+    private static List<BoardPosition> GetCannonMovablePositions(Board board, Piece piece)
+    {
+        List<BoardPosition> movablePositions = new List<BoardPosition>();
+
+        if (board == null || piece == null)
+        {
+            return movablePositions;
+        }
+
+        BoardPosition position = piece.Position;
+
+        AddCannonMovablePositionsInDirection(movablePositions, board, piece, position, 0, 1);
+        AddCannonMovablePositionsInDirection(movablePositions, board, piece, position, 0, -1);
+        AddCannonMovablePositionsInDirection(movablePositions, board, piece, position, -1, 0);
+        AddCannonMovablePositionsInDirection(movablePositions, board, piece, position, 1, 0);
+
+        return movablePositions;
+    }
+
+    private static void AddCannonMovablePositionsInDirection(List<BoardPosition> positions, Board board, Piece piece, BoardPosition start, int xOffset, int yOffset)
+    {
+        BoardPosition target = start.Add(xOffset, yOffset);
+        bool hasScreen = false;
+
+        while (board.IsInside(target))
+        {
+            if (!board.IsWalkable(target))
+            {
+                break;
+            }
+
+            Piece targetPiece = board.GetPiece(target);
+
+            if (!hasScreen)
+            {
+                if (targetPiece == null)
+                {
+                    target = target.Add(xOffset, yOffset);
+                    continue;
+                }
+
+                if (targetPiece.Type == PieceType.Cannon)
+                {
+                    break;
+                }
+
+                hasScreen = true;
+                target = target.Add(xOffset, yOffset);
+                continue;
+            }
+
+            if (targetPiece == null)
+            {
+                positions.Add(target);
+                target = target.Add(xOffset, yOffset);
+                continue;
+            }
+
+            if (CanCannonCapture(piece, targetPiece))
+            {
+                positions.Add(target);
+            }
+
+            break;
+        }
+    }
+
+    private static bool CanCannonCapture(Piece cannon, Piece targetPiece)
+    {
+        if (cannon == null || targetPiece == null)
+        {
+            return false;
+        }
+
+        if (targetPiece.Owner == cannon.Owner)
+        {
+            return false;
+        }
+
+        if (targetPiece.Type == PieceType.Cannon)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -12,6 +12,7 @@ public class MovementDebugRunner : MonoBehaviour
         RunSoldierTests();
         RunChariotTests();
         RunHorseTests();
+        RunCannonTests();
 
         Debug.Log("===== Movement Debug End =====");
     }
@@ -52,6 +53,19 @@ public class MovementDebugRunner : MonoBehaviour
         TestHorseBlockedByObstacleOnBlockPosition();
         TestHorseCanCaptureEnemyOnTarget();
         TestHorseBlockedByAllyOnTarget();
+    }
+
+    private void RunCannonTests()
+    {
+        TestCannonCannotMoveWithoutScreen();
+        TestCannonCanMoveAfterScreen();
+        TestCannonCannotJumpOverCannon();
+        TestCannonCanCaptureEnemyAfterScreen();
+        TestCannonCannotCaptureAllyAfterScreen();
+        TestCannonCannotCaptureCannonAfterScreen();
+        TestCannonStopsAfterSecondPiece();
+        TestCannonBlockedByObstacleBeforeScreen();
+        TestCannonBlockedByObstacleAfterScreen();
     }
 
     private void TestKingMoveFromCenter()
@@ -639,6 +653,304 @@ public class MovementDebugRunner : MonoBehaviour
 
         PrintPositions(
             "Expected count: 7, should NOT include (1, 4)",
+            positions
+        );
+    }
+
+    private void TestCannonCannotMoveWithoutScreen()
+    {
+        Debug.Log("[Test 24] Cannon cannot move without screen");
+
+        Board board = new Board(5, 5);
+
+        Piece cannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        board.PlacePiece(cannon, cannon.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, cannon);
+
+        PrintPositions(
+            "Expected count: 0, cannon cannot move when there is no screen piece",
+            positions
+        );
+    }
+
+    private void TestCannonCanMoveAfterScreen()
+    {
+        Debug.Log("[Test 25] Cannon can move after screen");
+
+        Board board = new Board(5, 5);
+
+        Piece cannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 0)
+        );
+
+        Piece screen = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 1)
+        );
+
+        board.PlacePiece(cannon, cannon.Position);
+        board.PlacePiece(screen, screen.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, cannon);
+
+        PrintPositions(
+            "Expected count: 3, should include (2, 2), (2, 3), (2, 4)",
+            positions
+        );
+    }
+
+    private void TestCannonCannotJumpOverCannon()
+    {
+        Debug.Log("[Test 26] Cannon cannot jump over cannon");
+
+        Board board = new Board(5, 5);
+
+        Piece cannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 0)
+        );
+
+        Piece screenCannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 1)
+        );
+
+        board.PlacePiece(cannon, cannon.Position);
+        board.PlacePiece(screenCannon, screenCannon.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, cannon);
+
+        PrintPositions(
+            "Expected count: 0, cannon cannot use another cannon as a screen",
+            positions
+        );
+    }
+
+    private void TestCannonCanCaptureEnemyAfterScreen()
+    {
+        Debug.Log("[Test 27] Cannon can capture enemy after screen");
+
+        Board board = new Board(5, 5);
+
+        Piece cannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 0)
+        );
+
+        Piece screen = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 1)
+        );
+
+        Piece enemy = new Piece(
+            PieceType.Horse,
+            PieceOwner.Enemy,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(cannon, cannon.Position);
+        board.PlacePiece(screen, screen.Position);
+        board.PlacePiece(enemy, enemy.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, cannon);
+
+        PrintPositions(
+            "Expected count: 2, should include (2, 2), (2, 3), should NOT include (2, 4)",
+            positions
+        );
+    }
+
+    private void TestCannonCannotCaptureAllyAfterScreen()
+    {
+        Debug.Log("[Test 28] Cannon cannot capture ally after screen");
+
+        Board board = new Board(5, 5);
+
+        Piece cannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 0)
+        );
+
+        Piece screen = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 1)
+        );
+
+        Piece ally = new Piece(
+            PieceType.Horse,
+            PieceOwner.Player,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(cannon, cannon.Position);
+        board.PlacePiece(screen, screen.Position);
+        board.PlacePiece(ally, ally.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, cannon);
+
+        PrintPositions(
+            "Expected count: 1, should include (2, 2), should NOT include (2, 3), should NOT include (2, 4)",
+            positions
+        );
+    }
+
+    private void TestCannonCannotCaptureCannonAfterScreen()
+    {
+        Debug.Log("[Test 29] Cannon cannot capture cannon after screen");
+
+        Board board = new Board(5, 5);
+
+        Piece cannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 0)
+        );
+
+        Piece screen = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 1)
+        );
+
+        Piece enemyCannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Enemy,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(cannon, cannon.Position);
+        board.PlacePiece(screen, screen.Position);
+        board.PlacePiece(enemyCannon, enemyCannon.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, cannon);
+
+        PrintPositions(
+            "Expected count: 1, should include (2, 2), should NOT include (2, 3), should NOT include (2, 4)",
+            positions
+        );
+    }
+
+    private void TestCannonStopsAfterSecondPiece()
+    {
+        Debug.Log("[Test 30] Cannon stops after second piece");
+
+        Board board = new Board(6, 6);
+
+        Piece cannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 0)
+        );
+
+        Piece screen = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 1)
+        );
+
+        Piece enemy = new Piece(
+            PieceType.Horse,
+            PieceOwner.Enemy,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(cannon, cannon.Position);
+        board.PlacePiece(screen, screen.Position);
+        board.PlacePiece(enemy, enemy.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, cannon);
+
+        PrintPositions(
+            "Expected count: 2, should include (2, 2), (2, 3), should NOT include (2, 4), should NOT include (2, 5)",
+            positions
+        );
+    }
+
+    private void TestCannonBlockedByObstacleBeforeScreen()
+    {
+        Debug.Log("[Test 31] Cannon blocked by obstacle before screen");
+
+        Board board = new Board(5, 5);
+
+        Piece cannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 0)
+        );
+
+        board.PlacePiece(cannon, cannon.Position);
+
+        BoardCell blockedCell = board.GetCell(new BoardPosition(2, 1));
+        blockedCell.SetBlocked(true);
+
+        Piece screen = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        board.PlacePiece(screen, screen.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, cannon);
+
+        PrintPositions(
+            "Expected count: 0, obstacle before screen blocks cannon completely in that direction",
+            positions
+        );
+    }
+
+    private void TestCannonBlockedByObstacleAfterScreen()
+    {
+        Debug.Log("[Test 32] Cannon blocked by obstacle after screen");
+
+        Board board = new Board(5, 5);
+
+        Piece cannon = new Piece(
+            PieceType.Cannon,
+            PieceOwner.Player,
+            new BoardPosition(2, 0)
+        );
+
+        Piece screen = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 1)
+        );
+
+        board.PlacePiece(cannon, cannon.Position);
+        board.PlacePiece(screen, screen.Position);
+
+        BoardCell blockedCell = board.GetCell(new BoardPosition(2, 3));
+        blockedCell.SetBlocked(true);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, cannon);
+
+        PrintPositions(
+            "Expected count: 1, should include (2, 2), should NOT include (2, 3), should NOT include (2, 4)",
             positions
         );
     }
