@@ -26,7 +26,7 @@ public static class MovementCalculator
                 return GetChariotMovablePositions(board, piece);
 
             case PieceType.Horse:
-                return new List<BoardPosition>();
+                return GetHorseMovablePositions(board, piece);
 
             case PieceType.Cannon:
                 return new List<BoardPosition>();
@@ -160,5 +160,66 @@ public static class MovementCalculator
 
             target = target.Add(xOffset, yOffset);
         }
+    }
+
+    private static List<BoardPosition> GetHorseMovablePositions(Board board, Piece piece)
+    {
+        List<BoardPosition> movablePositions = new List<BoardPosition>();
+
+        if (board == null || piece == null)
+        {
+            return movablePositions;
+        }
+
+        BoardPosition position = piece.Position;
+
+        AddHorseMoveIfAvailable(movablePositions, board, piece, position, 0, 1, -1, 2);
+        AddHorseMoveIfAvailable(movablePositions, board, piece, position, 0, 1, 1, 2);
+        AddHorseMoveIfAvailable(movablePositions, board, piece, position, 0, -1, -1, -2);
+        AddHorseMoveIfAvailable(movablePositions, board, piece, position, 0, -1, 1, -2);
+        AddHorseMoveIfAvailable(movablePositions, board, piece, position, -1, 0, -2, 1);
+        AddHorseMoveIfAvailable(movablePositions, board, piece, position, -1, 0, -2, -1);
+        AddHorseMoveIfAvailable(movablePositions, board, piece, position, 1, 0, 2, 1);
+        AddHorseMoveIfAvailable(movablePositions, board, piece, position, 1, 0, 2, -1);
+
+        return movablePositions;
+    }
+
+    private static void AddHorseMoveIfAvailable(List<BoardPosition> positions, Board board, Piece piece, BoardPosition start, int blockXOffset, int blockYOffset, int targetXOffset, int targetYOffset)
+    {
+        BoardPosition blockPosition = start.Add(blockXOffset, blockYOffset);
+
+        if (IsHorseBlocked(board, blockPosition))
+        {
+            return;
+        }
+
+        BoardPosition target = start.Add(targetXOffset, targetYOffset);
+        TryAddPosition(positions, board, piece, target);
+    }
+
+    private static bool IsHorseBlocked(Board board, BoardPosition blockPosition)
+    {
+        if (board == null)
+        {
+            return true;
+        }
+
+        if (!board.IsInside(blockPosition))
+        {
+            return true;
+        }
+
+        if (!board.IsWalkable(blockPosition))
+        {
+            return true;
+        }
+
+        if (board.IsOccupied(blockPosition))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

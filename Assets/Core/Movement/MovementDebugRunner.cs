@@ -3,30 +3,55 @@ using UnityEngine;
 
 public class MovementDebugRunner : MonoBehaviour
 {
+
     private void Start()
     {
         Debug.Log("===== Movement Debug Start =====");
 
+        RunKingTests();
+        RunSoldierTests();
+        RunChariotTests();
+        RunHorseTests();
+
+        Debug.Log("===== Movement Debug End =====");
+    }
+    private void RunKingTests()
+    {
         TestKingMoveFromCenter();
         TestKingMoveFromCorner();
         TestKingBlockedByAlly();
         TestKingCanCaptureEnemy();
         TestKingBlockedByObstacle();
+    }
 
+    private void RunSoldierTests()
+    {
         TestPlayerSoldierMoveFromCenter();
         TestEnemySoldierMoveFromCenter();
         TestSoldierMoveFromEdge();
         TestSoldierBlockedByAlly();
         TestSoldierCanCaptureEnemy();
         TestSoldierBlockedByObstacle();
+    }
 
+    private void RunChariotTests()
+    {
         TestChariotMoveFromCenter();
         TestChariotMoveFromCorner();
         TestChariotBlockedByAlly();
         TestChariotCanCaptureEnemy();
         TestChariotBlockedByObstacle();
+    }
 
-        Debug.Log("===== Movement Debug End =====");
+    private void RunHorseTests()
+    {
+        TestHorseMoveFromCenter();
+        TestHorseMoveFromCorner();
+        TestHorseBlockedByAllyOnBlockPosition();
+        TestHorseBlockedByEnemyOnBlockPosition();
+        TestHorseBlockedByObstacleOnBlockPosition();
+        TestHorseCanCaptureEnemyOnTarget();
+        TestHorseBlockedByAllyOnTarget();
     }
 
     private void TestKingMoveFromCenter()
@@ -422,6 +447,198 @@ public class MovementDebugRunner : MonoBehaviour
 
         PrintPositions(
             "Expected count: 6, should NOT include (2, 3), should NOT include (2, 4)",
+            positions
+        );
+    }
+
+    private void TestHorseMoveFromCenter()
+    {
+        Debug.Log("[Test 17] Horse move from center");
+
+        Board board = new Board(5, 5);
+
+        Piece horse = new Piece(
+            PieceType.Horse,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        board.PlacePiece(horse, horse.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, horse);
+
+        PrintPositions(
+            "Expected count: 8, should include (1, 4), (3, 4), (1, 0), (3, 0), (0, 3), (0, 1), (4, 3), (4, 1)",
+            positions
+        );
+    }
+
+    private void TestHorseMoveFromCorner()
+    {
+        Debug.Log("[Test 18] Horse move from corner");
+
+        Board board = new Board(5, 5);
+
+        Piece horse = new Piece(
+            PieceType.Horse,
+            PieceOwner.Player,
+            new BoardPosition(0, 0)
+        );
+
+        board.PlacePiece(horse, horse.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, horse);
+
+        PrintPositions(
+            "Expected count: 2, should include (1, 2), (2, 1)",
+            positions
+        );
+    }
+
+    private void TestHorseBlockedByAllyOnBlockPosition()
+    {
+        Debug.Log("[Test 19] Horse blocked by ally on block position");
+
+        Board board = new Board(5, 5);
+
+        Piece horse = new Piece(
+            PieceType.Horse,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        Piece ally = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(horse, horse.Position);
+        board.PlacePiece(ally, ally.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, horse);
+
+        PrintPositions(
+            "Expected count: 6, should NOT include (1, 4), should NOT include (3, 4)",
+            positions
+        );
+    }
+
+    private void TestHorseBlockedByEnemyOnBlockPosition()
+    {
+        Debug.Log("[Test 20] Horse blocked by enemy on block position");
+
+        Board board = new Board(5, 5);
+
+        Piece horse = new Piece(
+            PieceType.Horse,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        Piece enemy = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Enemy,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(horse, horse.Position);
+        board.PlacePiece(enemy, enemy.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, horse);
+
+        PrintPositions(
+            "Expected count: 6, should NOT include (1, 4), should NOT include (3, 4)",
+            positions
+        );
+    }
+
+    private void TestHorseBlockedByObstacleOnBlockPosition()
+    {
+        Debug.Log("[Test 21] Horse blocked by obstacle on block position");
+
+        Board board = new Board(5, 5);
+
+        Piece horse = new Piece(
+            PieceType.Horse,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        board.PlacePiece(horse, horse.Position);
+
+        BoardCell blockedCell = board.GetCell(new BoardPosition(2, 3));
+        blockedCell.SetBlocked(true);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, horse);
+
+        PrintPositions(
+            "Expected count: 6, should NOT include (1, 4), should NOT include (3, 4)",
+            positions
+        );
+    }
+
+    private void TestHorseCanCaptureEnemyOnTarget()
+    {
+        Debug.Log("[Test 22] Horse can capture enemy on target");
+
+        Board board = new Board(5, 5);
+
+        Piece horse = new Piece(
+            PieceType.Horse,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        Piece enemy = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Enemy,
+            new BoardPosition(1, 4)
+        );
+
+        board.PlacePiece(horse, horse.Position);
+        board.PlacePiece(enemy, enemy.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, horse);
+
+        PrintPositions(
+            "Expected count: 8, should include (1, 4)",
+            positions
+        );
+    }
+
+    private void TestHorseBlockedByAllyOnTarget()
+    {
+        Debug.Log("[Test 23] Horse blocked by ally on target");
+
+        Board board = new Board(5, 5);
+
+        Piece horse = new Piece(
+            PieceType.Horse,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        Piece ally = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(1, 4)
+        );
+
+        board.PlacePiece(horse, horse.Position);
+        board.PlacePiece(ally, ally.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, horse);
+
+        PrintPositions(
+            "Expected count: 7, should NOT include (1, 4)",
             positions
         );
     }
