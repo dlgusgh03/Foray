@@ -20,6 +20,12 @@ public class MovementDebugRunner : MonoBehaviour
         TestSoldierCanCaptureEnemy();
         TestSoldierBlockedByObstacle();
 
+        TestChariotMoveFromCenter();
+        TestChariotMoveFromCorner();
+        TestChariotBlockedByAlly();
+        TestChariotCanCaptureEnemy();
+        TestChariotBlockedByObstacle();
+
         Debug.Log("===== Movement Debug End =====");
     }
 
@@ -286,5 +292,137 @@ public class MovementDebugRunner : MonoBehaviour
             MovementCalculator.GetMovablePositions(board, soldier);
 
         PrintPositions("Expected count: 2, should NOT include (2, 3)", positions);
+    }
+
+    private void TestChariotMoveFromCenter()
+    {
+        Debug.Log("[Test 12] Chariot move from center");
+
+        Board board = new Board(5, 5);
+
+        Piece chariot = new Piece(
+            PieceType.Chariot,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        board.PlacePiece(chariot, chariot.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, chariot);
+
+        PrintPositions(
+            "Expected count: 8, should include (2, 0), (2, 1), (2, 3), (2, 4), (0, 2), (1, 2), (3, 2), (4, 2)",
+            positions
+        );
+    }
+
+    private void TestChariotMoveFromCorner()
+    {
+        Debug.Log("[Test 13] Chariot move from corner");
+
+        Board board = new Board(5, 5);
+
+        Piece chariot = new Piece(
+            PieceType.Chariot,
+            PieceOwner.Player,
+            new BoardPosition(0, 0)
+        );
+
+        board.PlacePiece(chariot, chariot.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, chariot);
+
+        PrintPositions(
+            "Expected count: 8, should include (0, 1), (0, 2), (0, 3), (0, 4), (1, 0), (2, 0), (3, 0), (4, 0)",
+            positions
+        );
+    }
+
+    private void TestChariotBlockedByAlly()
+    {
+        Debug.Log("[Test 14] Chariot blocked by ally");
+
+        Board board = new Board(5, 5);
+
+        Piece chariot = new Piece(
+            PieceType.Chariot,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        Piece ally = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Player,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(chariot, chariot.Position);
+        board.PlacePiece(ally, ally.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, chariot);
+
+        PrintPositions(
+            "Expected count: 6, should NOT include (2, 3), should NOT include (2, 4)",
+            positions
+        );
+    }
+
+    private void TestChariotCanCaptureEnemy()
+    {
+        Debug.Log("[Test 15] Chariot can capture enemy");
+
+        Board board = new Board(5, 5);
+
+        Piece chariot = new Piece(
+            PieceType.Chariot,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        Piece enemy = new Piece(
+            PieceType.Soldier,
+            PieceOwner.Enemy,
+            new BoardPosition(2, 3)
+        );
+
+        board.PlacePiece(chariot, chariot.Position);
+        board.PlacePiece(enemy, enemy.Position);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, chariot);
+
+        PrintPositions(
+            "Expected count: 7, should include (2, 3), should NOT include (2, 4)",
+            positions
+        );
+    }
+
+    private void TestChariotBlockedByObstacle()
+    {
+        Debug.Log("[Test 16] Chariot blocked by obstacle");
+
+        Board board = new Board(5, 5);
+
+        Piece chariot = new Piece(
+            PieceType.Chariot,
+            PieceOwner.Player,
+            new BoardPosition(2, 2)
+        );
+
+        board.PlacePiece(chariot, chariot.Position);
+
+        BoardCell blockedCell = board.GetCell(new BoardPosition(2, 3));
+        blockedCell.SetBlocked(true);
+
+        List<BoardPosition> positions =
+            MovementCalculator.GetMovablePositions(board, chariot);
+
+        PrintPositions(
+            "Expected count: 6, should NOT include (2, 3), should NOT include (2, 4)",
+            positions
+        );
     }
 }

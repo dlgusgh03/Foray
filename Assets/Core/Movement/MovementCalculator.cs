@@ -23,7 +23,7 @@ public static class MovementCalculator
                 return GetSoldierMovablePositions(board, piece);
 
             case PieceType.Chariot:
-                return new List<BoardPosition>();
+                return GetChariotMovablePositions(board, piece);
 
             case PieceType.Horse:
                 return new List<BoardPosition>();
@@ -34,6 +34,41 @@ public static class MovementCalculator
             default:
                 return new List<BoardPosition>();
         }
+    }
+
+    private static void TryAddPosition(List<BoardPosition> positions, Board board, Piece piece, BoardPosition target)
+    {
+        if (CanMoveTo(board, piece, target))
+        {
+            positions.Add(target);
+        }
+    }
+
+    private static bool CanMoveTo(Board board, Piece piece, BoardPosition target)
+    {
+        if (board == null || piece == null)
+        {
+            return false;
+        }
+
+        if (!board.IsInside(target))
+        {
+            return false;
+        }
+
+        if (!board.IsWalkable(target))
+        {
+            return false;
+        }
+
+        Piece targetPiece = board.GetPiece(target);
+
+        if (targetPiece == null)
+        {
+            return true;
+        }
+
+        return targetPiece.Owner != piece.Owner;
     }
 
     private static List<BoardPosition> GetKingMovablePositions(Board board, Piece piece)
@@ -86,38 +121,44 @@ public static class MovementCalculator
         return movablePositions;
     }
 
-    private static void TryAddPosition(List<BoardPosition> positions, Board board, Piece piece, BoardPosition target)
+    private static List<BoardPosition> GetChariotMovablePositions(Board board, Piece piece)
     {
-        if (CanMoveTo(board, piece, target))
-        {
-            positions.Add(target);
-        }
-    }
+        List<BoardPosition> movablePositions = new List<BoardPosition>();
 
-    private static bool CanMoveTo(Board board, Piece piece, BoardPosition target)
-    {
         if (board == null || piece == null)
         {
-            return false;
+            return movablePositions;
         }
 
-        if (!board.IsInside(target))
+        BoardPosition position = piece.Position;
+
+        AddStraightMovablePositions(movablePositions, board, piece, position, 0, 1);
+        AddStraightMovablePositions(movablePositions, board, piece, position, 0, -1);
+        AddStraightMovablePositions(movablePositions, board, piece, position, -1, 0);
+        AddStraightMovablePositions(movablePositions, board, piece, position, 1, 0);
+
+        return movablePositions;
+    }
+
+    private static void AddStraightMovablePositions(List<BoardPosition> positions, Board board, Piece piece, BoardPosition start, int xOffset, int yOffset)
+    {
+        BoardPosition target = start.Add(xOffset, yOffset);
+
+        while (board.IsInside(target))
         {
-            return false;
+            if (!board.IsWalkable(target))
+            {
+                break;
+            }
+
+            TryAddPosition(positions, board, piece, target);
+
+            if (board.IsOccupied(target))
+            {
+                break;
+            }
+
+            target = target.Add(xOffset, yOffset);
         }
-
-        if (!board.IsWalkable(target))
-        {
-            return false;
-        }
-
-        Piece targetPiece = board.GetPiece(target);
-
-        if (targetPiece == null)
-        {
-            return true;
-        }
-
-        return targetPiece.Owner != piece.Owner;
     }
 }
