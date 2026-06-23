@@ -1,4 +1,4 @@
-class BattleManager
+public class BattleManager
 {
     private readonly Board _board;
     private TurnManager _turnManager;
