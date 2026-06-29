@@ -8,15 +8,13 @@ public class RunManagerDebugRunner : MonoBehaviour
 
         RunManager runManager = new RunManager();
 
-        Debug.Log($"RunManager Created");
-        Debug.Log($"Stage Index: {runManager.StageIndex}");
-        Debug.Log($"Gold: {runManager.Gold}");
-        Debug.Log($"Player Army Count: {runManager.PlayerArmy.Count}");
-        Debug.Log($"Player Army Max Slots: {runManager.PlayerArmy.MaxSlots}");
+        Debug.Log("RunManager Created");
+        PrintRunStatus(runManager);
 
         runManager.StartRun();
 
         Debug.Log("StartRun() Called");
+        PrintRunStatus(runManager);
 
         if (runManager.CurrentBoard == null)
         {
@@ -35,12 +33,71 @@ public class RunManagerDebugRunner : MonoBehaviour
 
         PrintBoard(runManager.CurrentBoard);
         PrintPieces(runManager.CurrentBoard);
+        PrintBattleStatus(runManager.CurrentBattleManager);
 
-        Debug.Log($"Current Turn: {runManager.CurrentBattleManager.TurnManager.CurrentTurnOwner}");
-        Debug.Log($"Is Battle Over: {runManager.CurrentBattleManager.IsBattleOver()}");
-        Debug.Log($"Winner: {runManager.CurrentBattleManager.GetWinner()}");
+        Debug.Log("===== ResolveCurrentBattle Before Battle Over Test =====");
+
+        runManager.ResolveCurrentBattle();
+
+        Debug.Log("ResolveCurrentBattle() Called Before Battle Over");
+        PrintRunStatus(runManager);
+        PrintBattleStatus(runManager.CurrentBattleManager);
+
+        Debug.Log("===== Sample Turn Test =====");
+
+        bool playerActed = runManager.CurrentBattleManager.PlayerAct(
+            new BoardPosition(3, 0),
+            new BoardPosition(3, 1)
+        );
+
+        Debug.Log($"PlayerAct Soldier (3, 0) -> (3, 1): {playerActed}");
+        PrintBattleStatus(runManager.CurrentBattleManager);
+
+        if (playerActed && !runManager.CurrentBattleManager.IsBattleOver())
+        {
+            runManager.CurrentBattleManager.EnemyAct();
+            Debug.Log("EnemyAct() Called");
+        }
+
+        PrintBoard(runManager.CurrentBoard);
+        PrintPieces(runManager.CurrentBoard);
+        PrintBattleStatus(runManager.CurrentBattleManager);
+
+        runManager.ResolveCurrentBattle();
+
+        Debug.Log("ResolveCurrentBattle() Called After Sample Turn");
+        PrintRunStatus(runManager);
 
         Debug.Log("===== RunManager Debug End =====");
+    }
+
+    private void PrintRunStatus(RunManager runManager)
+    {
+        Debug.Log("===== Run Status =====");
+        Debug.Log($"Current State: {runManager.CurrentState}");
+        Debug.Log($"Is Run Over: {runManager.IsRunOver}");
+        Debug.Log($"Stage Index: {runManager.StageIndex}");
+        Debug.Log($"Gold: {runManager.Gold}");
+        Debug.Log($"Player Army Count: {runManager.PlayerArmy.Count}");
+        Debug.Log($"Player Army Max Slots: {runManager.PlayerArmy.MaxSlots}");
+    }
+
+    private void PrintBattleStatus(BattleManager battleManager)
+    {
+        Debug.Log("===== Battle Status =====");
+
+        if (battleManager == null)
+        {
+            Debug.LogError("BattleManager is null");
+            return;
+        }
+
+        PieceOwner? winner = battleManager.GetWinner();
+        string winnerText = winner.HasValue ? winner.Value.ToString() : "None";
+
+        Debug.Log($"Current Turn: {battleManager.TurnManager.CurrentTurnOwner}");
+        Debug.Log($"Is Battle Over: {battleManager.IsBattleOver()}");
+        Debug.Log($"Winner: {winnerText}");
     }
 
     private void PrintBoard(Board board)
@@ -82,7 +139,8 @@ public class RunManagerDebugRunner : MonoBehaviour
             Debug.Log(line);
         }
 
-        Debug.Log("Legend: PK=Player King, PS=Player Soldier, EK=Enemy King, ES=Enemy Soldier, X=Blocked, .=Empty");
+        Debug.Log("Legend: PK=Player King, PS=Player Soldier, PC=Player Chariot, PH=Player Horse, PN=Player Cannon");
+        Debug.Log("Legend: EK=Enemy King, ES=Enemy Soldier, EC=Enemy Chariot, EH=Enemy Horse, EN=Enemy Cannon, X=Blocked, .=Empty");
     }
 
     private void PrintPieces(Board board)
