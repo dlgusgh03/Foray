@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine.Apple;
 
 public class TurnManager
 {
