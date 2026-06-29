@@ -32,11 +32,7 @@ public class RunManager
         MapPreset mapPreset = SelectMapPreset();
         EnemyPreset enemyPreset = SelectEnemyPreset();
 
-        _currentBattleManager = BattleSetup.CreateBattle(
-            mapPreset,
-            enemyPreset,
-            _playerArmy
-        );
+        _currentBattleManager = BattleSetup.CreateBattle(mapPreset, enemyPreset, _playerArmy);
 
         if (_currentBattleManager == null)
         {

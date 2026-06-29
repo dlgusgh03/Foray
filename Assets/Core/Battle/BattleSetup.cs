@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 public static class BattleSetup
 {
@@ -11,14 +13,12 @@ public static class BattleSetup
         return CreateBattle(mapPreset, enemyPreset, playerArmy);
     }
 
-    public static BattleManager CreateBattle(
-        MapPreset mapPreset,
-        EnemyPreset enemyPreset,
-        PlayerArmy playerArmy
+    public static BattleManager CreateBattle(MapPreset mapPreset, EnemyPreset enemyPreset, PlayerArmy playerArmy
     )
     {
         if (mapPreset == null || enemyPreset == null || playerArmy == null)
         {
+            Debug.LogError("BattleSetup failed: mapPreset, enemyPreset, or playerArmy is null.");
             return null;
         }
 
@@ -69,6 +69,9 @@ public static class BattleSetup
 
         if (pieceTypes.Count > mapPreset.PlayerDeployPositions.Count)
         {
+            Debug.LogError(
+                $"BattleSetup failed: player piece count({pieceTypes.Count}) is greater than player deploy position count({mapPreset.PlayerDeployPositions.Count})."
+            );
             return false;
         }
 
@@ -83,6 +86,7 @@ public static class BattleSetup
 
             if (!placed)
             {
+                Debug.LogError($"BattleSetup failed: could not place player piece {type} at {position}.");
                 return false;
             }
         }
@@ -99,16 +103,14 @@ public static class BattleSetup
 
         foreach (EnemyPieceData enemyPieceData in enemyPreset.EnemyPieces)
         {
-            Piece enemyPiece = new Piece(
-                enemyPieceData.Type,
-                PieceOwner.Enemy,
-                enemyPieceData.Position
+            Piece enemyPiece = new Piece(enemyPieceData.Type, PieceOwner.Enemy, enemyPieceData.Position
             );
 
             bool placed = board.PlacePiece(enemyPiece, enemyPiece.Position);
 
             if (!placed)
             {
+                Debug.LogError($"BattleSetup failed: could not place enemy piece {enemyPieceData.Type} at {enemyPieceData.Position}.");
                 return false;
             }
         }
