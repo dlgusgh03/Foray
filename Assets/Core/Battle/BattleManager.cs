@@ -4,6 +4,7 @@ public class BattleManager
     private TurnManager _turnManager;
     private EnemyAI _enemyAI;
 
+    public Board Board => _board;
     public TurnManager TurnManager => _turnManager;
     public EnemyAI EnemyAI => _enemyAI;
 
