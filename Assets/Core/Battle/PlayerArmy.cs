@@ -3,14 +3,25 @@ using System.Collections.Generic;
 public class PlayerArmy
 {
     private readonly List<PieceType> _ownedPieceTypes;
-    private int _maxSlots;
+    private int _maxPopulation;
 
-    public int MaxSlots => _maxSlots;
-    public int Count => _ownedPieceTypes.Count;
+    public int MaxPopulation => _maxPopulation;
+    public int CurrentPopulation
+    {
+        get
+        {
+            int sum = 0;
+            foreach (PieceType piece in _ownedPieceTypes)
+            {
+                sum += PieceCatalog.GetPopulationCost(piece);
+            }
+            return sum;
+        }
+    }
 
     public PlayerArmy()
     {
-        _maxSlots = 3;
+        _maxPopulation = 6;
         _ownedPieceTypes = new List<PieceType>();
 
         _ownedPieceTypes.Add(PieceType.King);
@@ -18,14 +29,15 @@ public class PlayerArmy
         _ownedPieceTypes.Add(PieceType.Soldier);
     }
 
-    public bool CanAddPiece()
+    public bool CanAddPiece(PieceType type)
     {
-        return _ownedPieceTypes.Count < _maxSlots;
+        int cost = PieceCatalog.GetPopulationCost(type);
+        return CurrentPopulation + cost <= _maxPopulation;
     }
 
     public bool AddPiece(PieceType type)
     {
-        if (!CanAddPiece())
+        if (!CanAddPiece(type))
         {
             return false;
         }
@@ -50,14 +62,14 @@ public class PlayerArmy
         return true;
     }
 
-    public void IncreaseMaxSlots(int amount)
+    public void IncreaseMaxPopulation(int amount)
     {
         if (amount <= 0)
         {
             return;
         }
 
-        _maxSlots += amount;
+        _maxPopulation += amount;
     }
 
     public List<PieceType> GetOwnedPieceTypes()

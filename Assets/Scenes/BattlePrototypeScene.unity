@@ -130,6 +130,11 @@ GameObject:
   - component: {fileID: 456220534}
   - component: {fileID: 456220533}
   - component: {fileID: 456220535}
+  - component: {fileID: 456220540}
+  - component: {fileID: 456220539}
+  - component: {fileID: 456220538}
+  - component: {fileID: 456220537}
+  - component: {fileID: 456220536}
   m_Layer: 0
   m_Name: DebugRunner
   m_TagString: Untagged
@@ -171,11 +176,71 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 456220532}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c31449a9afae0ef438c7a478261d9c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementDebugRunner
+--- !u!114 &456220536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1616235085ff17743ac0f3feab7f3fc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnDebugRunner
+--- !u!114 &456220537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cb2997430e034f4fba6ac54f63240f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RunManagerDebugRunner
+--- !u!114 &456220538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddfadb41401cc604faae0002e0536ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAIDebugRunner
+--- !u!114 &456220539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9487f01230313e4469ace5c90eb7e3d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleSetupDebugRunner
+--- !u!114 &456220540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2dcb5032fbf75409468e2bd7355fe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleManagerDebugRunner
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
