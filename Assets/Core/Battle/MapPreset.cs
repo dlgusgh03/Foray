@@ -23,50 +23,30 @@ public class MapPreset
         _enemyDeployPositions = enemyDeployPositions;
     }
 
-    public static MapPreset CreateOpenField()
+    public static MapPreset CreateSquare(int length)
     {
         List<BoardPosition> blockedPositions = new List<BoardPosition>();
+        List<BoardPosition> playerDeployPositions = new List<BoardPosition>();
+        List<BoardPosition> enemyDeployPositions = new List<BoardPosition>();
 
-        List<BoardPosition> playerDeployPositions = new List<BoardPosition>()
+        int deployRows = 2;
+
+        for (int y = 0; y < deployRows; y++)
         {
-            new BoardPosition(2, 0),
-            new BoardPosition(3, 0),
-            new BoardPosition(4, 0)
-        };
+            for (int x = 0; x < length; x++)
+            {
+                playerDeployPositions.Add(new BoardPosition(x, y));
+            }
+        }
 
-        List<BoardPosition> enemyDeployPositions = new List<BoardPosition>()
+        for (int y = length - deployRows; y < length; y++)
         {
-            new BoardPosition(2, 6),
-            new BoardPosition(3, 6),
-            new BoardPosition(4, 6)
-        };
+            for (int x = 0; x < length; x++)
+            {
+                enemyDeployPositions.Add(new BoardPosition(x, y));
+            }
+        }
 
-        return new MapPreset(7, 7, blockedPositions, playerDeployPositions, enemyDeployPositions);
-    }
-
-    public static MapPreset CreateCenterBlock()
-    {
-        List<BoardPosition> blockedPositions = new List<BoardPosition>()
-        {
-            new BoardPosition(3, 3),
-            new BoardPosition(2, 3),
-            new BoardPosition(4, 3)
-        };
-
-        List<BoardPosition> playerDeployPositions = new List<BoardPosition>()
-        {
-            new BoardPosition(2, 0),
-            new BoardPosition(3, 0),
-            new BoardPosition(4, 0)
-        };
-
-        List<BoardPosition> enemyDeployPositions = new List<BoardPosition>()
-        {
-            new BoardPosition(2, 6),
-            new BoardPosition(3, 6),
-            new BoardPosition(4, 6)
-        };
-
-        return new MapPreset(7, 7, blockedPositions, playerDeployPositions, enemyDeployPositions);
+        return new MapPreset(length, length, blockedPositions, playerDeployPositions, enemyDeployPositions);
     }
 }

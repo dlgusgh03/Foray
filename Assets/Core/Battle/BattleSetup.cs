@@ -6,7 +6,7 @@ public static class BattleSetup
 {
     public static BattleManager CreateBasicBattle()
     {
-        MapPreset mapPreset = MapPreset.CreateOpenField();
+        MapPreset mapPreset = MapPreset.CreateSquare(7);
         EnemyPreset enemyPreset = EnemyPreset.CreateEasySoldiers();
         PlayerArmy playerArmy = new PlayerArmy();
 

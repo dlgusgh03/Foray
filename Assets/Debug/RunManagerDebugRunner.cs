@@ -78,8 +78,8 @@ public class RunManagerDebugRunner : MonoBehaviour
         Debug.Log($"Is Run Over: {runManager.IsRunOver}");
         Debug.Log($"Stage Index: {runManager.StageIndex}");
         Debug.Log($"Gold: {runManager.Gold}");
-        Debug.Log($"Player Army Count: {runManager.PlayerArmy.Count}");
-        Debug.Log($"Player Army Max Slots: {runManager.PlayerArmy.MaxSlots}");
+        Debug.Log($"Player Army Current Population: {runManager.PlayerArmy.CurrentPopulation}");
+        Debug.Log($"Player Army Max Population: {runManager.PlayerArmy.MaxPopulation}");
     }
 
     private void PrintBattleStatus(BattleManager battleManager)

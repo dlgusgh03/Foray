@@ -117,7 +117,7 @@ public class RunManager
 
     private MapPreset SelectMapPreset()
     {
-        return MapPreset.CreateOpenField();
+        return MapPreset.CreateSquare(7);
     }
 
     private EnemyPreset SelectEnemyPreset()
