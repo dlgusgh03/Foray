@@ -1,10 +1,15 @@
 public class RunManager
 {
-    private const int BattleWinGold = 10;
+    private const int NormalBattleWinGold = 5;
+    private const int BossBattleWinGold = 10;
+    private const int InterestGoldUnit = 5;
+    private const int MaxInterestGold = 5;
+    private const int BossStageInterval = 3;
 
     private PlayerArmy _playerArmy;
     private int _stageIndex;
     private int _gold;
+    private int _bossClearCount;
     private bool _isRunOver;
     private RunState _currentState;
 
@@ -14,6 +19,7 @@ public class RunManager
     public PlayerArmy PlayerArmy => _playerArmy;
     public int StageIndex => _stageIndex;
     public int Gold => _gold;
+    public int BossClearCount => _bossClearCount;
     public bool IsRunOver => _isRunOver;
     public RunState CurrentState => _currentState;
     public Board CurrentBoard => _currentBoard;
@@ -24,6 +30,7 @@ public class RunManager
         _playerArmy = new PlayerArmy();
         _stageIndex = 1;
         _gold = 0;
+        _bossClearCount = 0;
         _isRunOver = false;
         _currentState = RunState.None;
         _currentBoard = null;
@@ -35,6 +42,7 @@ public class RunManager
         _playerArmy = new PlayerArmy();
         _stageIndex = 1;
         _gold = 0;
+        _bossClearCount = 0;
         _isRunOver = false;
         _currentState = RunState.Battle;
 
@@ -89,7 +97,16 @@ public class RunManager
 
     private void HandleBattleWin()
     {
-        _gold += BattleWinGold;
+        if (IsBossStage())
+        {
+            ApplyBossBattleReward();
+            _bossClearCount++;
+        }
+        else
+        {
+            ApplyNormalBattleReward();
+        }
+
         _stageIndex++;
         _currentState = RunState.Shop;
     }
@@ -123,5 +140,72 @@ public class RunManager
     private EnemyPreset SelectEnemyPreset()
     {
         return EnemyPreset.CreateEasySoldiers();
+    }
+
+    public void AddGold(int amount)
+    {
+        if (amount <= 0)
+        {
+            return;
+        }
+
+        _gold += amount;
+    }
+
+    public bool CanSpendGold(int amount)
+    {
+        if (amount < 0)
+        {
+            return false;
+        }
+
+        return _gold >= amount;
+    }
+
+    public bool SpendGold(int amount)
+    {
+        if (!CanSpendGold(amount))
+        {
+            return false;
+        }
+
+        _gold -= amount;
+        return true;
+    }
+
+    public int CalculateInterest()
+    {
+        int interest = _gold / InterestGoldUnit;
+
+        if (interest > MaxInterestGold)
+        {
+            interest = MaxInterestGold;
+        }
+
+        return interest;
+    }
+
+    public int ApplyInterest()
+    {
+        int interest = CalculateInterest();
+        AddGold(interest);
+        return interest;
+    }
+
+    public void ApplyNormalBattleReward()
+    {
+        AddGold(NormalBattleWinGold);
+        ApplyInterest();
+    }
+
+    public void ApplyBossBattleReward()
+    {
+        AddGold(BossBattleWinGold);
+        ApplyInterest();
+    }
+
+    private bool IsBossStage()
+    {
+        return _stageIndex % BossStageInterval == 0;
     }
 }
