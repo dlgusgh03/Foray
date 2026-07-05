@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public class Shop
 {
-    private const int PopulationPriceIncreaseAmount = 2;
+    private const int PopulationPriceIncreaseAmount = 3;
     private const int PopulationIncreaseAmount = 2;
 
     private readonly RunManager _runManager;
