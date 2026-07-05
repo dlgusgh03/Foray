@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 456220538}
   - component: {fileID: 456220537}
   - component: {fileID: 456220536}
+  - component: {fileID: 456220541}
   m_Layer: 0
   m_Name: DebugRunner
   m_TagString: Untagged
@@ -224,7 +225,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 456220532}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9487f01230313e4469ace5c90eb7e3d0, type: 3}
   m_Name: 
@@ -241,6 +242,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2dcb5032fbf75409468e2bd7355fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleManagerDebugRunner
+--- !u!114 &456220541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a908b9247f1c65478a787fd9a461881, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopDebugRunner
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

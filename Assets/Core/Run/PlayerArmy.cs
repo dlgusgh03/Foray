@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using System.Collections.Generic;
 
 public class PlayerArmy
@@ -6,15 +7,18 @@ public class PlayerArmy
     private int _maxPopulation;
 
     public int MaxPopulation => _maxPopulation;
+    public int PieceCount => _ownedPieceTypes.Count;
     public int CurrentPopulation
     {
         get
         {
             int sum = 0;
+
             foreach (PieceType piece in _ownedPieceTypes)
             {
                 sum += PieceCatalog.GetPopulationCost(piece);
             }
+
             return sum;
         }
     }
@@ -32,6 +36,7 @@ public class PlayerArmy
     public bool CanAddPiece(PieceType type)
     {
         int cost = PieceCatalog.GetPopulationCost(type);
+
         return CurrentPopulation + cost <= _maxPopulation;
     }
 
@@ -43,6 +48,7 @@ public class PlayerArmy
         }
 
         _ownedPieceTypes.Add(type);
+
         return true;
     }
 
@@ -59,6 +65,7 @@ public class PlayerArmy
         }
 
         _ownedPieceTypes.RemoveAt(index);
+
         return true;
     }
 

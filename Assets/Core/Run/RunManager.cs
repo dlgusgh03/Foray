@@ -10,6 +10,7 @@ public class RunManager
     private int _stageIndex;
     private int _gold;
     private int _bossClearCount;
+    private int _populationPrice;
     private bool _isRunOver;
     private RunState _currentState;
 
@@ -20,6 +21,7 @@ public class RunManager
     public int StageIndex => _stageIndex;
     public int Gold => _gold;
     public int BossClearCount => _bossClearCount;
+    public int PopulationPrice => _populationPrice;
     public bool IsRunOver => _isRunOver;
     public RunState CurrentState => _currentState;
     public Board CurrentBoard => _currentBoard;
@@ -31,6 +33,7 @@ public class RunManager
         _stageIndex = 1;
         _gold = 0;
         _bossClearCount = 0;
+        _populationPrice = 5;
         _isRunOver = false;
         _currentState = RunState.None;
         _currentBoard = null;
@@ -43,6 +46,7 @@ public class RunManager
         _stageIndex = 1;
         _gold = 0;
         _bossClearCount = 0;
+        _populationPrice = 5;
         _isRunOver = false;
         _currentState = RunState.Battle;
 
@@ -207,5 +211,15 @@ public class RunManager
     private bool IsBossStage()
     {
         return _stageIndex % BossStageInterval == 0;
+    }
+
+    public void IncreasePopulationPrice(int amount)
+    {
+        if (amount <= 0)
+        {
+            return;
+        }
+
+        _populationPrice += amount;
     }
 }
