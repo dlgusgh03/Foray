@@ -10,11 +10,13 @@ public class RunManagerDebugRunner : MonoBehaviour
 
         Debug.Log("RunManager Created");
         PrintRunStatus(runManager);
+        PrintShopStatus(runManager);
 
         runManager.StartRun();
 
         Debug.Log("StartRun() Called");
         PrintRunStatus(runManager);
+        PrintShopStatus(runManager);
 
         if (runManager.CurrentBoard == null)
         {
@@ -41,34 +43,119 @@ public class RunManagerDebugRunner : MonoBehaviour
 
         Debug.Log("ResolveCurrentBattle() Called Before Battle Over");
         PrintRunStatus(runManager);
+        PrintShopStatus(runManager);
         PrintBattleStatus(runManager.CurrentBattleManager);
 
-        Debug.Log("===== Sample Turn Test =====");
+        Debug.Log("===== Force Win Battle Test =====");
 
-        bool playerActed = runManager.CurrentBattleManager.PlayerAct(
-            new BoardPosition(3, 0),
-            new BoardPosition(3, 1)
-        );
+        runManager.DebugForceBattleWin();
 
-        Debug.Log($"PlayerAct Soldier (3, 0) -> (3, 1): {playerActed}");
+        Debug.Log("DebugForceBattleWin() Called");
+        PrintRunStatus(runManager);
+        PrintShopStatus(runManager);
+
+        Debug.Log("ForcePlayerWin() Called");
         PrintBattleStatus(runManager.CurrentBattleManager);
 
-        if (playerActed && !runManager.CurrentBattleManager.IsBattleOver())
+        runManager.ResolveCurrentBattle();
+
+        Debug.Log("ResolveCurrentBattle() Called After Force Win");
+        PrintRunStatus(runManager);
+        PrintShopStatus(runManager);
+
+        Debug.Log("===== Shop Test =====");
+
+        if (runManager.CurrentShop == null)
         {
-            runManager.CurrentBattleManager.EnemyAct();
-            Debug.Log("EnemyAct() Called");
+            Debug.LogError("CurrentShop is null after battle win");
+            return;
+        }
+
+        Debug.Log("AddGold(20) for Shop Debug");
+        runManager.AddGold(20);
+        PrintRunStatus(runManager);
+        PrintShopStatus(runManager);
+
+        bool boughtSoldier = runManager.CurrentShop.BuyPiece(PieceType.Soldier);
+        Debug.Log($"BuyPiece(Soldier): {boughtSoldier}");
+        PrintRunStatus(runManager);
+        PrintArmy(runManager.PlayerArmy);
+
+        bool boughtHorse = runManager.CurrentShop.BuyPiece(PieceType.Horse);
+        Debug.Log($"BuyPiece(Horse): {boughtHorse}");
+        PrintRunStatus(runManager);
+        PrintArmy(runManager.PlayerArmy);
+
+        bool soldKing = runManager.CurrentShop.SellPiece(0);
+        Debug.Log($"SellPiece(0 / King) should be false: {soldKing}");
+        PrintRunStatus(runManager);
+        PrintArmy(runManager.PlayerArmy);
+
+        bool soldPiece = runManager.CurrentShop.SellPiece(1);
+        Debug.Log($"SellPiece(1) should be true: {soldPiece}");
+        PrintRunStatus(runManager);
+        PrintArmy(runManager.PlayerArmy);
+
+        bool boughtPopulationFirst = runManager.CurrentShop.BuyPopulation();
+        Debug.Log($"BuyPopulation() first should be true: {boughtPopulationFirst}");
+        PrintRunStatus(runManager);
+        PrintShopStatus(runManager);
+
+        bool boughtPopulationSecond = runManager.CurrentShop.BuyPopulation();
+        Debug.Log($"BuyPopulation() second should be false: {boughtPopulationSecond}");
+        PrintRunStatus(runManager);
+        PrintShopStatus(runManager);
+
+        Debug.Log("===== Start Next Battle Test =====");
+
+        runManager.StartNextBattle();
+
+        Debug.Log("StartNextBattle() Called");
+        PrintRunStatus(runManager);
+        PrintShopStatus(runManager);
+
+        if (runManager.CurrentBoard == null)
+        {
+            Debug.LogError("CurrentBoard is null after StartNextBattle");
+            return;
+        }
+
+        if (runManager.CurrentBattleManager == null)
+        {
+            Debug.LogError("CurrentBattleManager is null after StartNextBattle");
+            return;
         }
 
         PrintBoard(runManager.CurrentBoard);
         PrintPieces(runManager.CurrentBoard);
         PrintBattleStatus(runManager.CurrentBattleManager);
 
-        runManager.ResolveCurrentBattle();
-
-        Debug.Log("ResolveCurrentBattle() Called After Sample Turn");
-        PrintRunStatus(runManager);
-
         Debug.Log("===== RunManager Debug End =====");
+    }
+
+    private void ForcePlayerWin(RunManager runManager)
+    {
+        BattleManager battleManager = runManager.CurrentBattleManager;
+
+        if (battleManager == null)
+        {
+            Debug.LogError("Cannot force win: BattleManager is null");
+            return;
+        }
+
+        Board board = battleManager.Board;
+
+        Piece enemyKing = board.GetPiece(new BoardPosition(3, 6));
+
+        if (enemyKing == null)
+        {
+            Debug.LogError("Cannot force win: Enemy king not found at (3, 6)");
+            return;
+        }
+
+        enemyKing.Kill();
+
+        Debug.Log("Enemy king killed directly for debug.");
     }
 
     private void PrintRunStatus(RunManager runManager)
@@ -78,8 +165,39 @@ public class RunManagerDebugRunner : MonoBehaviour
         Debug.Log($"Is Run Over: {runManager.IsRunOver}");
         Debug.Log($"Stage Index: {runManager.StageIndex}");
         Debug.Log($"Gold: {runManager.Gold}");
+        Debug.Log($"Population Price: {runManager.PopulationPrice}");
         Debug.Log($"Player Army Current Population: {runManager.PlayerArmy.CurrentPopulation}");
         Debug.Log($"Player Army Max Population: {runManager.PlayerArmy.MaxPopulation}");
+    }
+
+    private void PrintShopStatus(RunManager runManager)
+    {
+        Debug.Log("===== Shop Status =====");
+
+        if (runManager.CurrentShop == null)
+        {
+            Debug.Log("CurrentShop: null");
+            return;
+        }
+
+        Debug.Log("CurrentShop: exists");
+        Debug.Log($"Has Bought Population: {runManager.CurrentShop.HasBoughtPopulation}");
+    }
+
+    private void PrintArmy(PlayerArmy playerArmy)
+    {
+        Debug.Log("===== Player Army =====");
+
+        var pieces = playerArmy.GetOwnedPieceTypes();
+
+        for (int i = 0; i < pieces.Count; i++)
+        {
+            Debug.Log($"[{i}] {pieces[i]}");
+        }
+
+        Debug.Log($"Piece Count: {playerArmy.PieceCount}");
+        Debug.Log($"Current Population: {playerArmy.CurrentPopulation}");
+        Debug.Log($"Max Population: {playerArmy.MaxPopulation}");
     }
 
     private void PrintBattleStatus(BattleManager battleManager)

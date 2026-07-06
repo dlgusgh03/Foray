@@ -16,6 +16,7 @@ public class RunManager
 
     private Board _currentBoard;
     private BattleManager _currentBattleManager;
+    private Shop _currentShop;
 
     public PlayerArmy PlayerArmy => _playerArmy;
     public int StageIndex => _stageIndex;
@@ -26,6 +27,7 @@ public class RunManager
     public RunState CurrentState => _currentState;
     public Board CurrentBoard => _currentBoard;
     public BattleManager CurrentBattleManager => _currentBattleManager;
+    public Shop CurrentShop => _currentShop;
 
     public RunManager()
     {
@@ -38,6 +40,7 @@ public class RunManager
         _currentState = RunState.None;
         _currentBoard = null;
         _currentBattleManager = null;
+        _currentShop = null;
     }
 
     public void StartRun()
@@ -112,6 +115,7 @@ public class RunManager
         }
 
         _stageIndex++;
+        _currentShop = new Shop(this);
         _currentState = RunState.Shop;
     }
 
@@ -133,7 +137,13 @@ public class RunManager
             return;
         }
 
+        _currentShop = null;
         StartBattle();
+    }
+
+    public void LeaveShop()
+    {
+        StartNextBattle();
     }
 
     private MapPreset SelectMapPreset()
@@ -222,4 +232,11 @@ public class RunManager
 
         _populationPrice += amount;
     }
+
+#if UNITY_EDITOR
+    public void DebugForceBattleWin()
+    {
+        HandleBattleWin();
+    }
+#endif
 }
