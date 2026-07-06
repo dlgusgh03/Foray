@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RunManagerDebugRunner : MonoBehaviour
@@ -30,9 +31,6 @@ public class RunManagerDebugRunner : MonoBehaviour
             return;
         }
 
-        Debug.Log("CurrentBoard Created");
-        Debug.Log("CurrentBattleManager Created");
-
         PrintBoard(runManager.CurrentBoard);
         PrintPieces(runManager.CurrentBoard);
         PrintBattleStatus(runManager.CurrentBattleManager);
@@ -53,15 +51,7 @@ public class RunManagerDebugRunner : MonoBehaviour
         Debug.Log("DebugForceBattleWin() Called");
         PrintRunStatus(runManager);
         PrintShopStatus(runManager);
-
-        Debug.Log("ForcePlayerWin() Called");
-        PrintBattleStatus(runManager.CurrentBattleManager);
-
-        runManager.ResolveCurrentBattle();
-
-        Debug.Log("ResolveCurrentBattle() Called After Force Win");
-        PrintRunStatus(runManager);
-        PrintShopStatus(runManager);
+        PrintShopItems(runManager.CurrentShop);
 
         Debug.Log("===== Shop Test =====");
 
@@ -75,16 +65,28 @@ public class RunManagerDebugRunner : MonoBehaviour
         runManager.AddGold(20);
         PrintRunStatus(runManager);
         PrintShopStatus(runManager);
+        PrintShopItems(runManager.CurrentShop);
 
-        bool boughtSoldier = runManager.CurrentShop.BuyPiece(PieceType.Soldier);
-        Debug.Log($"BuyPiece(Soldier): {boughtSoldier}");
+        bool boughtItem0 = runManager.CurrentShop.BuyItem(0);
+        Debug.Log($"BuyItem(0): {boughtItem0}");
         PrintRunStatus(runManager);
         PrintArmy(runManager.PlayerArmy);
+        PrintShopItems(runManager.CurrentShop);
 
-        bool boughtHorse = runManager.CurrentShop.BuyPiece(PieceType.Horse);
-        Debug.Log($"BuyPiece(Horse): {boughtHorse}");
+        bool boughtItem0Again = runManager.CurrentShop.BuyItem(0);
+        Debug.Log($"BuyItem(0) again should be false: {boughtItem0Again}");
         PrintRunStatus(runManager);
         PrintArmy(runManager.PlayerArmy);
+        PrintShopItems(runManager.CurrentShop);
+
+        bool boughtItem1 = runManager.CurrentShop.BuyItem(1);
+        Debug.Log($"BuyItem(1): {boughtItem1}");
+        PrintRunStatus(runManager);
+        PrintArmy(runManager.PlayerArmy);
+        PrintShopItems(runManager.CurrentShop);
+
+        bool boughtInvalidItem = runManager.CurrentShop.BuyItem(999);
+        Debug.Log($"BuyItem(999) should be false: {boughtInvalidItem}");
 
         bool soldKing = runManager.CurrentShop.SellPiece(0);
         Debug.Log($"SellPiece(0 / King) should be false: {soldKing}");
@@ -131,6 +133,26 @@ public class RunManagerDebugRunner : MonoBehaviour
         PrintBattleStatus(runManager.CurrentBattleManager);
 
         Debug.Log("===== RunManager Debug End =====");
+    }
+
+    private void PrintShopItems(Shop shop)
+    {
+        Debug.Log("===== Shop Items =====");
+
+        if (shop == null)
+        {
+            Debug.Log("Shop is null");
+            return;
+        }
+
+        List<ShopItem> items = shop.GetItems();
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            ShopItem item = items[i];
+
+            Debug.Log($"[{i}] {item.PieceType} / Price: {item.Price} / IsSold: {item.IsSold}");
+        }
     }
 
     private void ForcePlayerWin(RunManager runManager)

@@ -13,10 +13,13 @@ public class ShopDebugRunner : MonoBehaviour
         Debug.Log("===== SHOP DEBUG START =====");
 
         PrintState("Initial State", runManager);
+        PrintShopItems(shop);
 
+        TestBuyInvalidItemIndex(shop, runManager);
         TestBuyWithoutGold(shop, runManager);
         TestBuyPopulation(shop, runManager);
-        TestBuyPiece(shop, runManager);
+        TestBuyItem(shop, runManager);
+        TestBuySoldItemAgain(shop, runManager);
         TestSellPiece(shop, runManager);
         TestInvalidSell(shop, runManager);
         TestKingSell(shop, runManager);
@@ -25,66 +28,34 @@ public class ShopDebugRunner : MonoBehaviour
         Debug.Log("===== SHOP DEBUG END =====");
     }
 
-    private void TestBuyWithoutGold(Shop shop, RunManager runManager)
+    private void TestBuyInvalidItemIndex(Shop shop, RunManager runManager)
     {
-        Debug.Log("\n--- Test 1: Buy Piece Without Gold ---");
+        Debug.Log("\n--- Test 1: Buy Invalid Item Index ---");
 
-        bool result = shop.BuyPiece(PieceType.Soldier);
-
-        Debug.Log($"Result: {result}");
-        PrintState("After Buy Without Gold", runManager);
-    }
-
-    private void TestBuyPiece(Shop shop, RunManager runManager)
-    {
-        Debug.Log("\n--- Test 3: Buy Piece ---");
-
-        bool result = shop.BuyPiece(PieceType.Soldier);
-
-        Debug.Log($"Result: {result}");
-        PrintState("After Buy Piece", runManager);
-    }
-
-    private void TestSellPiece(Shop shop, RunManager runManager)
-    {
-        Debug.Log("\n--- Test 4: Sell Piece ---");
-
-        int sellIndex = runManager.PlayerArmy.PieceCount - 1;
-
-        bool result = shop.SellPiece(sellIndex);
-
-        Debug.Log($"Result: {result}");
-        PrintState("After Sell Piece", runManager);
-    }
-
-    private void TestInvalidSell(Shop shop, RunManager runManager)
-    {
-        Debug.Log("\n--- Test 5: Sell Invalid Index ---");
-
-        bool negativeResult = shop.SellPiece(-1);
-        bool outOfRangeResult = shop.SellPiece(999);
+        bool negativeResult = shop.BuyItem(-1);
+        bool outOfRangeResult = shop.BuyItem(999);
 
         Debug.Log($"Negative Index Result: {negativeResult}");
         Debug.Log($"Out Of Range Result: {outOfRangeResult}");
-        PrintState("After Invalid Sell", runManager);
+
+        PrintState("After Invalid Item Buy", runManager);
+        PrintShopItems(shop);
     }
 
-    private void TestKingSell(Shop shop, RunManager runManager)
+    private void TestBuyWithoutGold(Shop shop, RunManager runManager)
     {
-        Debug.Log("\n--- Test 6: Sell King ---");
+        Debug.Log("\n--- Test 2: Buy Item Without Gold ---");
 
-        int kingIndex = FindPieceIndex(runManager.PlayerArmy, PieceType.King);
+        bool result = shop.BuyItem(0);
 
-        bool result = shop.SellPiece(kingIndex);
-
-        Debug.Log($"King Index: {kingIndex}");
-        Debug.Log($"Result: {result}");
-        PrintState("After Sell King Attempt", runManager);
+        Debug.Log($"BuyItem(0) Result: {result}");
+        PrintState("After Buy Without Gold", runManager);
+        PrintShopItems(shop);
     }
 
     private void TestBuyPopulation(Shop shop, RunManager runManager)
     {
-        Debug.Log("\n--- Test 2: Buy Population ---");
+        Debug.Log("\n--- Test 3: Buy Population ---");
 
         runManager.AddGold(100);
 
@@ -100,11 +71,80 @@ public class ShopDebugRunner : MonoBehaviour
         Debug.Log($"Current Max Population: {runManager.PlayerArmy.MaxPopulation}");
 
         PrintState("After Buy Population", runManager);
+        PrintShopItems(shop);
+    }
+
+    private void TestBuyItem(Shop shop, RunManager runManager)
+    {
+        Debug.Log("\n--- Test 4: Buy Item By Index ---");
+
+        bool result = shop.BuyItem(0);
+
+        Debug.Log($"BuyItem(0) Result: {result}");
+        PrintState("After Buy Item", runManager);
+        PrintShopItems(shop);
+    }
+
+    private void TestBuySoldItemAgain(Shop shop, RunManager runManager)
+    {
+        Debug.Log("\n--- Test 5: Buy Sold Item Again ---");
+
+        int previousGold = runManager.Gold;
+        int previousPieceCount = runManager.PlayerArmy.PieceCount;
+
+        bool result = shop.BuyItem(0);
+
+        Debug.Log($"BuyItem(0) Again Result: {result}");
+        Debug.Log($"Gold Changed: {previousGold} -> {runManager.Gold}");
+        Debug.Log($"Piece Count Changed: {previousPieceCount} -> {runManager.PlayerArmy.PieceCount}");
+
+        PrintState("After Buy Sold Item Again", runManager);
+        PrintShopItems(shop);
+    }
+
+    private void TestSellPiece(Shop shop, RunManager runManager)
+    {
+        Debug.Log("\n--- Test 6: Sell Piece ---");
+
+        int sellIndex = runManager.PlayerArmy.PieceCount - 1;
+
+        bool result = shop.SellPiece(sellIndex);
+
+        Debug.Log($"SellPiece({sellIndex}) Result: {result}");
+        PrintState("After Sell Piece", runManager);
+        PrintShopItems(shop);
+    }
+
+    private void TestInvalidSell(Shop shop, RunManager runManager)
+    {
+        Debug.Log("\n--- Test 7: Sell Invalid Index ---");
+
+        bool negativeResult = shop.SellPiece(-1);
+        bool outOfRangeResult = shop.SellPiece(999);
+
+        Debug.Log($"Negative Index Result: {negativeResult}");
+        Debug.Log($"Out Of Range Result: {outOfRangeResult}");
+        PrintState("After Invalid Sell", runManager);
+        PrintShopItems(shop);
+    }
+
+    private void TestKingSell(Shop shop, RunManager runManager)
+    {
+        Debug.Log("\n--- Test 8: Sell King ---");
+
+        int kingIndex = FindPieceIndex(runManager.PlayerArmy, PieceType.King);
+
+        bool result = shop.SellPiece(kingIndex);
+
+        Debug.Log($"King Index: {kingIndex}");
+        Debug.Log($"Result: {result}");
+        PrintState("After Sell King Attempt", runManager);
+        PrintShopItems(shop);
     }
 
     private void TestBuyPopulationTwice(Shop shop, RunManager runManager)
     {
-        Debug.Log("\n--- Test 7: Buy Population Twice In Same Shop ---");
+        Debug.Log("\n--- Test 9: Buy Population Twice In Same Shop ---");
 
         int previousGold = runManager.Gold;
         int previousPrice = runManager.PopulationPrice;
@@ -115,11 +155,10 @@ public class ShopDebugRunner : MonoBehaviour
         Debug.Log($"Result: {result}");
         Debug.Log($"Gold Changed: {previousGold} -> {runManager.Gold}");
         Debug.Log($"Price Changed: {previousPrice} -> {runManager.PopulationPrice}");
-        Debug.Log(
-            $"Max Population Changed: {previousMaxPopulation} -> {runManager.PlayerArmy.MaxPopulation}"
-        );
+        Debug.Log($"Max Population Changed: {previousMaxPopulation} -> {runManager.PlayerArmy.MaxPopulation}");
 
         PrintState("After Second Population Buy Attempt", runManager);
+        PrintShopItems(shop);
     }
 
     private int FindPieceIndex(PlayerArmy playerArmy, PieceType type)
@@ -150,5 +189,21 @@ public class ShopDebugRunner : MonoBehaviour
             $"Piece Count: {playerArmy.PieceCount}\n" +
             $"Pieces: {string.Join(", ", pieces)}"
         );
+    }
+
+    private void PrintShopItems(Shop shop)
+    {
+        Debug.Log("===== Shop Items =====");
+
+        List<ShopItem> items = shop.GetItems();
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            ShopItem item = items[i];
+
+            Debug.Log(
+                $"[{i}] {item.PieceType} / Price: {item.Price} / IsSold: {item.IsSold}"
+            );
+        }
     }
 }

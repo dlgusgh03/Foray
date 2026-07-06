@@ -8,6 +8,7 @@ public class Shop
     private readonly RunManager _runManager;
     private readonly PlayerArmy _playerArmy;
     private bool _hasBoughtPopulation;
+    private List<ShopItem> _items;
 
     public RunManager RunManager => _runManager;
     public PlayerArmy PlayerArmy => _playerArmy;
@@ -18,16 +19,53 @@ public class Shop
         _runManager = runManager;
         _playerArmy = runManager.PlayerArmy;
         _hasBoughtPopulation = false;
+        _items = new List<ShopItem>();
+
+        GenerateItems();
     }
 
-    public bool BuyPiece(PieceType type)
+    public List<ShopItem> GetItems()
+    {
+        return new List<ShopItem>(_items);
+    }
+
+    private void GenerateItems()
+    {
+        AddPieceItem(PieceType.Soldier);
+        AddPieceItem(PieceType.Horse);
+    }
+
+    private void AddPieceItem(PieceType type)
     {
         int? price = PieceCatalog.GetBuyPrice(type);
 
-        if (CanBuyPiece(type))
+        if (price == null)
         {
-            _runManager.SpendGold(price.Value);
-            _playerArmy.AddPiece(type);
+            return;
+        }
+
+        _items.Add(new ShopItem(type, price.Value));
+    }
+
+    public bool BuyItem(int index)
+    {
+        if (index < 0 || index >= _items.Count)
+        {
+            return false;
+        }
+
+        ShopItem item = _items[index];
+        
+        if (item.IsSold)
+        {
+            return false;
+        }
+
+        if (CanBuyPiece(item.PieceType))
+        {
+            _runManager.SpendGold(item.Price);
+            _playerArmy.AddPiece(item.PieceType);
+            item.MarkSold();
 
             return true;
         }
