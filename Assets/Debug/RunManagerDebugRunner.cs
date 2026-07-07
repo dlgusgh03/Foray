@@ -5,80 +5,144 @@ public class RunManagerDebugRunner : MonoBehaviour
 {
     private void Start()
     {
-        Debug.Log("===== RunManager Unlock Debug Start =====");
+        Debug.Log("===== Augment Selection Debug Start =====");
 
         RunManager runManager = new RunManager();
-
-        Debug.Log("===== Before StartRun =====");
-        PrintRunStatus(runManager);
-        PrintUnlockedPieces(runManager);
-
         runManager.StartRun();
 
-        Debug.Log("===== After StartRun =====");
+        Debug.Log("===== Initial State =====");
         PrintRunStatus(runManager);
-        PrintUnlockedPieces(runManager);
+        PrintOwnedAugments(runManager);
 
-        Debug.Log("Expected: Soldier, Horse");
-        ValidateUnlockState(
+        ValidateState(
             runManager,
-            expectCannon: false,
-            expectChariot: false
+            RunState.Battle,
+            "StartRun State Test"
         );
 
-        for (int stage = 1; stage <= 6; stage++)
+        Debug.Log("===== SelectAugment Before Selection Test =====");
+
+        int ownedCountBeforeInvalidSelection =
+            runManager.GetCurrentAugments().Count;
+
+        runManager.SelectAugment(0);
+
+        int ownedCountAfterInvalidSelection =
+            runManager.GetCurrentAugments().Count;
+
+        if (ownedCountBeforeInvalidSelection == ownedCountAfterInvalidSelection)
         {
-            Debug.Log($"===== Stage {stage} Force Win =====");
-
-            runManager.DebugForceBattleWin();
-
-            PrintRunStatus(runManager);
-            PrintUnlockedPieces(runManager);
-            PrintShopItems(runManager.CurrentShop);
-
-            if (stage < 3)
-            {
-                Debug.Log("Expected Unlocks: Soldier, Horse");
-
-                ValidateUnlockState(
-                    runManager,
-                    expectCannon: false,
-                    expectChariot: false
-                );
-            }
-            else if (stage < 6)
-            {
-                Debug.Log("Expected Unlocks: Soldier, Horse, Cannon");
-
-                ValidateUnlockState(
-                    runManager,
-                    expectCannon: true,
-                    expectChariot: false
-                );
-            }
-            else
-            {
-                Debug.Log("Expected Unlocks: Soldier, Horse, Cannon, Chariot");
-
-                ValidateUnlockState(
-                    runManager,
-                    expectCannon: true,
-                    expectChariot: true
-                );
-            }
-
-            ValidateShopItems(runManager);
-
-            if (stage < 6)
-            {
-                runManager.StartNextBattle();
-
-                Debug.Log("StartNextBattle() Called");
-                PrintRunStatus(runManager);
-            }
+            Debug.Log("Select Before AugmentSelection Test: PASS");
+        }
+        else
+        {
+            Debug.LogError("Select Before AugmentSelection Test: FAIL");
         }
 
-        Debug.Log("===== RunManager Unlock Debug End =====");
+        Debug.Log("===== First Boss Test =====");
+
+        AdvanceToNextBoss(runManager);
+
+        PrintRunStatus(runManager);
+        PrintAugmentChoices(runManager);
+        PrintOwnedAugments(runManager);
+
+        ValidateState(
+            runManager,
+            RunState.AugmentSelection,
+            "First Boss State Test"
+        );
+
+        ValidateAugmentChoices(runManager);
+
+        Debug.Log("===== Invalid Selection Test =====");
+
+        runManager.SelectAugment(-1);
+
+        ValidateState(
+            runManager,
+            RunState.AugmentSelection,
+            "Negative Index Test"
+        );
+
+        runManager.SelectAugment(
+            runManager.GetAugmentChoices().Count
+        );
+
+        ValidateState(
+            runManager,
+            RunState.AugmentSelection,
+            "Out Of Range Index Test"
+        );
+
+        Debug.Log("===== First Augment Selection Test =====");
+
+        List<Augment> firstChoices =
+            runManager.GetAugmentChoices();
+
+        int firstSelectedID = firstChoices[0].ID;
+
+        runManager.SelectAugment(0);
+
+        PrintRunStatus(runManager);
+        PrintOwnedAugments(runManager);
+        PrintAugmentChoices(runManager);
+
+        ValidateState(
+            runManager,
+            RunState.Shop,
+            "After First Selection State Test"
+        );
+
+        ValidateSelectedAugment(
+            runManager,
+            firstSelectedID
+        );
+
+        ValidateChoicesCleared(runManager);
+
+        Debug.Log("===== Second Boss Test =====");
+
+        AdvanceToNextBoss(runManager);
+
+        PrintRunStatus(runManager);
+        PrintAugmentChoices(runManager);
+        PrintOwnedAugments(runManager);
+
+        ValidateState(
+            runManager,
+            RunState.AugmentSelection,
+            "Second Boss State Test"
+        );
+
+        ValidateAugmentChoices(runManager);
+
+        Debug.Log("===== Second Augment Selection Test =====");
+
+        List<Augment> secondChoices =
+            runManager.GetAugmentChoices();
+
+        int secondSelectedID = secondChoices[0].ID;
+
+        runManager.SelectAugment(0);
+
+        PrintRunStatus(runManager);
+        PrintOwnedAugments(runManager);
+
+        ValidateState(
+            runManager,
+            RunState.Shop,
+            "After Second Selection State Test"
+        );
+
+        ValidateSelectedAugment(
+            runManager,
+            secondSelectedID
+        );
+
+        ValidateChoicesCleared(runManager);
+
+        Debug.Log("===== Augment Selection Debug End =====");
     }
 
     private void PrintShopItems(Shop shop)
@@ -404,5 +468,204 @@ public class RunManagerDebugRunner : MonoBehaviour
         }
 
         return "??";
+    }
+
+    private void AdvanceToNextBoss(RunManager runManager)
+    {
+        if (runManager.CurrentState == RunState.Shop)
+        {
+            runManager.StartNextBattle();
+        }
+
+        int safetyCount = 0;
+
+        while (
+            runManager.CurrentState == RunState.Battle &&
+            safetyCount < 10
+        )
+        {
+            Debug.Log(
+                $"Force Win / " +
+                $"Stage: {runManager.StageIndex}, " +
+                $"Round: {runManager.RoundIndex}"
+            );
+
+            runManager.DebugForceBattleWin();
+
+            PrintRunStatus(runManager);
+
+            if (runManager.CurrentState == RunState.Shop)
+            {
+                runManager.StartNextBattle();
+            }
+
+            safetyCount++;
+        }
+
+        if (safetyCount >= 10)
+        {
+            Debug.LogError(
+                "AdvanceToNextBoss Test: FAIL / Safety limit reached"
+            );
+        }
+    }
+
+    private void PrintAugmentChoices(RunManager runManager)
+    {
+        Debug.Log("===== Augment Choices =====");
+
+        List<Augment> choices =
+            runManager.GetAugmentChoices();
+
+        if (choices.Count == 0)
+        {
+            Debug.Log("No Augment Choices");
+            return;
+        }
+
+        for (int i = 0; i < choices.Count; i++)
+        {
+            Augment augment = choices[i];
+
+            Debug.Log(
+                $"[{i}] " +
+                $"ID: {augment.ID} / " +
+                $"Name: {augment.Name} / " +
+                $"Rarity: {augment.Rarity}"
+            );
+        }
+
+        Debug.Log($"Choice Count: {choices.Count}");
+    }
+
+    private void PrintOwnedAugments(RunManager runManager)
+    {
+        Debug.Log("===== Owned Augments =====");
+
+        List<Augment> augments =
+            runManager.GetCurrentAugments();
+
+        if (augments.Count == 0)
+        {
+            Debug.Log("No Owned Augments");
+            return;
+        }
+
+        for (int i = 0; i < augments.Count; i++)
+        {
+            Augment augment = augments[i];
+
+            Debug.Log(
+                $"[{i}] " +
+                $"ID: {augment.ID} / " +
+                $"Name: {augment.Name} / " +
+                $"Rarity: {augment.Rarity}"
+            );
+        }
+
+        Debug.Log($"Owned Augment Count: {augments.Count}");
+    }
+
+    private void ValidateState(
+    RunManager runManager,
+    RunState expectedState,
+    string testName
+)
+    {
+        if (runManager.CurrentState == expectedState)
+        {
+            Debug.Log($"{testName}: PASS");
+        }
+        else
+        {
+            Debug.LogError(
+                $"{testName}: FAIL / " +
+                $"Expected: {expectedState}, " +
+                $"Actual: {runManager.CurrentState}"
+            );
+        }
+    }
+
+    private void ValidateAugmentChoices(RunManager runManager)
+    {
+        List<Augment> choices =
+            runManager.GetAugmentChoices();
+
+        List<Augment> ownedAugments =
+            runManager.GetCurrentAugments();
+
+        HashSet<int> choiceIDs = new HashSet<int>();
+
+        foreach (Augment choice in choices)
+        {
+            if (!choiceIDs.Add(choice.ID))
+            {
+                Debug.LogError(
+                    $"Augment Choices Test: FAIL / " +
+                    $"Duplicate Choice ID: {choice.ID}"
+                );
+
+                return;
+            }
+
+            foreach (Augment ownedAugment in ownedAugments)
+            {
+                if (choice.ID == ownedAugment.ID)
+                {
+                    Debug.LogError(
+                        $"Augment Choices Test: FAIL / " +
+                        $"Already Owned Augment Appeared: {choice.Name}"
+                    );
+
+                    return;
+                }
+            }
+        }
+
+        if (choices.Count == 0)
+        {
+            Debug.LogError(
+                "Augment Choices Test: FAIL / No choices generated"
+            );
+
+            return;
+        }
+
+        Debug.Log("Augment Choices Test: PASS");
+    }
+
+    private void ValidateSelectedAugment(
+    RunManager runManager,
+    int selectedID
+)
+    {
+        List<Augment> ownedAugments =
+            runManager.GetCurrentAugments();
+
+        foreach (Augment augment in ownedAugments)
+        {
+            if (augment.ID == selectedID)
+            {
+                Debug.Log("Selected Augment Test: PASS");
+                return;
+            }
+        }
+
+        Debug.LogError(
+            $"Selected Augment Test: FAIL / " +
+            $"Selected ID {selectedID} not found"
+        );
+    }
+
+    private void ValidateChoicesCleared(RunManager runManager)
+    {
+        if (runManager.GetAugmentChoices().Count == 0)
+        {
+            Debug.Log("Augment Choices Clear Test: PASS");
+        }
+        else
+        {
+            Debug.LogError("Augment Choices Clear Test: FAIL");
+        }
     }
 }

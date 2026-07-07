@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class RunManager
 {
@@ -7,9 +8,11 @@ public class RunManager
     private const int InterestGoldUnit = 5;
     private const int MaxInterestGold = 5;
     private const int BossStageInterval = 3;
+    private const int MaxAugmentCount = 5;
 
     private PlayerArmy _playerArmy;
     private int _stageIndex;
+    private int _roundIndex;
     private int _gold;
     private int _bossClearCount;
     private int _populationPrice;
@@ -20,9 +23,13 @@ public class RunManager
     private BattleManager _currentBattleManager;
     private Shop _currentShop;
     private readonly List<PieceType> _unlockedPieceTypes;
+    private readonly List<Augment> _currentAugments;
+    private readonly List<Augment> _augmentChoices;
+    private Augment _pendingAugment;
 
     public PlayerArmy PlayerArmy => _playerArmy;
     public int StageIndex => _stageIndex;
+    public int RoundIndex => _roundIndex;
     public int Gold => _gold;
     public int BossClearCount => _bossClearCount;
     public int PopulationPrice => _populationPrice;
@@ -35,11 +42,21 @@ public class RunManager
     {
         return new List<PieceType>(_unlockedPieceTypes);
     }
+    public List<Augment> GetCurrentAugments()
+    {
+        return new List<Augment>(_currentAugments);
+    }
+    public List<Augment> GetAugmentChoices()
+    {
+        return new List<Augment>(_augmentChoices);
+    }
+    public Augment PendingAugment => _pendingAugment;
 
     public RunManager()
     {
         _playerArmy = new PlayerArmy();
         _stageIndex = 1;
+        _roundIndex = 1;
         _gold = 0;
         _bossClearCount = 0;
         _populationPrice = 5;
@@ -50,18 +67,27 @@ public class RunManager
         _currentShop = null;
         _unlockedPieceTypes = new List<PieceType>();
         InitializeUnlockedPieces();
+        _currentAugments = new List<Augment>();
+        InitializeCurrentAugments();
+        _augmentChoices = new List<Augment>();
+        InitializeAugmentChoices();
+        _pendingAugment = null;
     }
 
     public void StartRun()
     {
         _playerArmy = new PlayerArmy();
         _stageIndex = 1;
+        _roundIndex = 1;
         _gold = 0;
         _bossClearCount = 0;
         _populationPrice = 5;
         _isRunOver = false;
         _currentState = RunState.Battle;
         InitializeUnlockedPieces();
+        InitializeCurrentAugments();
+        InitializeAugmentChoices();
+        _pendingAugment = null;
 
         StartBattle();
     }
@@ -71,6 +97,16 @@ public class RunManager
         _unlockedPieceTypes.Clear();
         UnlockPiece(PieceType.Soldier);
         UnlockPiece(PieceType.Horse);
+    }
+
+    private void InitializeCurrentAugments()
+    {
+        _currentAugments.Clear();
+    }
+
+    private void InitializeAugmentChoices()
+    {
+        _augmentChoices.Clear();
     }
 
     private void StartBattle()
@@ -125,14 +161,21 @@ public class RunManager
         {
             ApplyBossBattleReward();
             _bossClearCount++;
+            _stageIndex++;
+            _roundIndex = 1;
             UpdatePieceUnlocks();
+
+            GenerateAugmentChoices();
+            _currentState = RunState.AugmentSelection;
+
+            return;
         }
         else
         {
             ApplyNormalBattleReward();
         }
 
-        _stageIndex++;
+        _roundIndex++;
         _currentShop = new Shop(this);
         _currentState = RunState.Shop;
     }
@@ -157,6 +200,104 @@ public class RunManager
 
         _currentShop = null;
         StartBattle();
+    }
+
+    public void GenerateAugmentChoices()
+    {
+        _augmentChoices.Clear();
+        List<Augment> augmentList = AugmentCatalog.GetAllAugments();
+
+        for (int i = augmentList.Count - 1; i >= 0; i--)
+        {
+            Augment availableAugment = augmentList[i];
+
+            foreach (Augment currentAugment in _currentAugments)
+            {
+                if (availableAugment.Equals(currentAugment))
+                {
+                    augmentList.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+
+        int choiceCount = augmentList.Count < 3 ? augmentList.Count : 3;
+
+        for (int i = 0; i < choiceCount; ++i)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, augmentList.Count);
+            Augment randomAugment = augmentList[randomIndex];
+            augmentList.RemoveAt(randomIndex);
+            _augmentChoices.Add(randomAugment);
+        }
+    }
+
+    public void SelectAugment(int index)
+    {
+        if(_currentState != RunState.AugmentSelection)
+        {
+            return;
+        }
+
+        if(index < 0 || index >= _augmentChoices.Count)
+        {
+            return;
+        }
+
+        if(_currentAugments.Count < MaxAugmentCount)
+        {
+            AddAugment(_augmentChoices[index]);
+            _augmentChoices.Clear();
+
+            _currentShop = new Shop(this);
+            _currentState = RunState.Shop;
+
+            return;
+        }
+        
+        else
+        {
+            _pendingAugment = _augmentChoices[index];
+            _augmentChoices.Clear();
+            _currentState = RunState.AugmentReplacement;
+        }
+    }
+
+    public void ReplaceAugment(int index)
+    {
+        if (_currentState != RunState.AugmentReplacement)
+        {
+            return;
+        }
+
+        if (index < 0 || index >= _currentAugments.Count)
+        {
+            return;
+        }
+
+        if (_pendingAugment == null)
+        {
+            return;
+        }
+
+        _currentAugments[index] = _pendingAugment;
+        _pendingAugment = null;
+
+        _currentShop = new Shop(this);
+        _currentState = RunState.Shop;
+    }
+
+    public void SkipAugment()
+    {
+        if (_currentState != RunState.AugmentReplacement)
+        {
+            return;
+        }
+
+        _pendingAugment = null;
+
+        _currentShop = new Shop(this);
+        _currentState = RunState.Shop;
     }
 
     public void LeaveShop()
@@ -259,9 +400,34 @@ public class RunManager
         _unlockedPieceTypes.Add(type);
     }
 
+    private void AddAugment(Augment augment)
+    {
+        if(_currentAugments.Count >= MaxAugmentCount)
+        {
+            return;
+        }
+
+        _currentAugments.Add(augment);
+    }
+
+    private void RemoveAugment(int index)
+    {
+        if(index < 0 || index >= _currentAugments.Count)
+        {
+            return;
+        }
+
+        if (_currentAugments[index] == null)
+        {
+            return;
+        }
+
+        _currentAugments.RemoveAt(index);
+    }
+
     private bool IsBossStage()
     {
-        return _stageIndex % BossStageInterval == 0;
+        return _roundIndex % BossStageInterval == 0;
     }
 
     public void IncreasePopulationPrice(int amount)
