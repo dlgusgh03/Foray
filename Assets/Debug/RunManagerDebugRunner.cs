@@ -5,134 +5,80 @@ public class RunManagerDebugRunner : MonoBehaviour
 {
     private void Start()
     {
-        Debug.Log("===== RunManager Debug Start =====");
+        Debug.Log("===== RunManager Unlock Debug Start =====");
 
         RunManager runManager = new RunManager();
 
-        Debug.Log("RunManager Created");
+        Debug.Log("===== Before StartRun =====");
         PrintRunStatus(runManager);
-        PrintShopStatus(runManager);
+        PrintUnlockedPieces(runManager);
 
         runManager.StartRun();
 
-        Debug.Log("StartRun() Called");
+        Debug.Log("===== After StartRun =====");
         PrintRunStatus(runManager);
-        PrintShopStatus(runManager);
+        PrintUnlockedPieces(runManager);
 
-        if (runManager.CurrentBoard == null)
+        Debug.Log("Expected: Soldier, Horse");
+        ValidateUnlockState(
+            runManager,
+            expectCannon: false,
+            expectChariot: false
+        );
+
+        for (int stage = 1; stage <= 6; stage++)
         {
-            Debug.LogError("CurrentBoard is null");
-            return;
+            Debug.Log($"===== Stage {stage} Force Win =====");
+
+            runManager.DebugForceBattleWin();
+
+            PrintRunStatus(runManager);
+            PrintUnlockedPieces(runManager);
+            PrintShopItems(runManager.CurrentShop);
+
+            if (stage < 3)
+            {
+                Debug.Log("Expected Unlocks: Soldier, Horse");
+
+                ValidateUnlockState(
+                    runManager,
+                    expectCannon: false,
+                    expectChariot: false
+                );
+            }
+            else if (stage < 6)
+            {
+                Debug.Log("Expected Unlocks: Soldier, Horse, Cannon");
+
+                ValidateUnlockState(
+                    runManager,
+                    expectCannon: true,
+                    expectChariot: false
+                );
+            }
+            else
+            {
+                Debug.Log("Expected Unlocks: Soldier, Horse, Cannon, Chariot");
+
+                ValidateUnlockState(
+                    runManager,
+                    expectCannon: true,
+                    expectChariot: true
+                );
+            }
+
+            ValidateShopItems(runManager);
+
+            if (stage < 6)
+            {
+                runManager.StartNextBattle();
+
+                Debug.Log("StartNextBattle() Called");
+                PrintRunStatus(runManager);
+            }
         }
 
-        if (runManager.CurrentBattleManager == null)
-        {
-            Debug.LogError("CurrentBattleManager is null");
-            return;
-        }
-
-        PrintBoard(runManager.CurrentBoard);
-        PrintPieces(runManager.CurrentBoard);
-        PrintBattleStatus(runManager.CurrentBattleManager);
-
-        Debug.Log("===== ResolveCurrentBattle Before Battle Over Test =====");
-
-        runManager.ResolveCurrentBattle();
-
-        Debug.Log("ResolveCurrentBattle() Called Before Battle Over");
-        PrintRunStatus(runManager);
-        PrintShopStatus(runManager);
-        PrintBattleStatus(runManager.CurrentBattleManager);
-
-        Debug.Log("===== Force Win Battle Test =====");
-
-        runManager.DebugForceBattleWin();
-
-        Debug.Log("DebugForceBattleWin() Called");
-        PrintRunStatus(runManager);
-        PrintShopStatus(runManager);
-        PrintShopItems(runManager.CurrentShop);
-
-        Debug.Log("===== Shop Test =====");
-
-        if (runManager.CurrentShop == null)
-        {
-            Debug.LogError("CurrentShop is null after battle win");
-            return;
-        }
-
-        Debug.Log("AddGold(20) for Shop Debug");
-        runManager.AddGold(20);
-        PrintRunStatus(runManager);
-        PrintShopStatus(runManager);
-        PrintShopItems(runManager.CurrentShop);
-
-        bool boughtItem0 = runManager.CurrentShop.BuyItem(0);
-        Debug.Log($"BuyItem(0): {boughtItem0}");
-        PrintRunStatus(runManager);
-        PrintArmy(runManager.PlayerArmy);
-        PrintShopItems(runManager.CurrentShop);
-
-        bool boughtItem0Again = runManager.CurrentShop.BuyItem(0);
-        Debug.Log($"BuyItem(0) again should be false: {boughtItem0Again}");
-        PrintRunStatus(runManager);
-        PrintArmy(runManager.PlayerArmy);
-        PrintShopItems(runManager.CurrentShop);
-
-        bool boughtItem1 = runManager.CurrentShop.BuyItem(1);
-        Debug.Log($"BuyItem(1): {boughtItem1}");
-        PrintRunStatus(runManager);
-        PrintArmy(runManager.PlayerArmy);
-        PrintShopItems(runManager.CurrentShop);
-
-        bool boughtInvalidItem = runManager.CurrentShop.BuyItem(999);
-        Debug.Log($"BuyItem(999) should be false: {boughtInvalidItem}");
-
-        bool soldKing = runManager.CurrentShop.SellPiece(0);
-        Debug.Log($"SellPiece(0 / King) should be false: {soldKing}");
-        PrintRunStatus(runManager);
-        PrintArmy(runManager.PlayerArmy);
-
-        bool soldPiece = runManager.CurrentShop.SellPiece(1);
-        Debug.Log($"SellPiece(1) should be true: {soldPiece}");
-        PrintRunStatus(runManager);
-        PrintArmy(runManager.PlayerArmy);
-
-        bool boughtPopulationFirst = runManager.CurrentShop.BuyPopulation();
-        Debug.Log($"BuyPopulation() first should be true: {boughtPopulationFirst}");
-        PrintRunStatus(runManager);
-        PrintShopStatus(runManager);
-
-        bool boughtPopulationSecond = runManager.CurrentShop.BuyPopulation();
-        Debug.Log($"BuyPopulation() second should be false: {boughtPopulationSecond}");
-        PrintRunStatus(runManager);
-        PrintShopStatus(runManager);
-
-        Debug.Log("===== Start Next Battle Test =====");
-
-        runManager.StartNextBattle();
-
-        Debug.Log("StartNextBattle() Called");
-        PrintRunStatus(runManager);
-        PrintShopStatus(runManager);
-
-        if (runManager.CurrentBoard == null)
-        {
-            Debug.LogError("CurrentBoard is null after StartNextBattle");
-            return;
-        }
-
-        if (runManager.CurrentBattleManager == null)
-        {
-            Debug.LogError("CurrentBattleManager is null after StartNextBattle");
-            return;
-        }
-
-        PrintBoard(runManager.CurrentBoard);
-        PrintPieces(runManager.CurrentBoard);
-        PrintBattleStatus(runManager.CurrentBattleManager);
-
-        Debug.Log("===== RunManager Debug End =====");
+        Debug.Log("===== RunManager Unlock Debug End =====");
     }
 
     private void PrintShopItems(Shop shop)
@@ -204,6 +150,108 @@ public class RunManagerDebugRunner : MonoBehaviour
 
         Debug.Log("CurrentShop: exists");
         Debug.Log($"Has Bought Population: {runManager.CurrentShop.HasBoughtPopulation}");
+    }
+
+    private void PrintUnlockedPieces(RunManager runManager)
+    {
+        Debug.Log("===== Unlocked Pieces =====");
+
+        List<PieceType> unlockedPieceTypes =
+            runManager.GetUnlockedPieceTypes();
+
+        for (int i = 0; i < unlockedPieceTypes.Count; i++)
+        {
+            Debug.Log($"[{i}] {unlockedPieceTypes[i]}");
+        }
+
+        Debug.Log($"Unlocked Piece Count: {unlockedPieceTypes.Count}");
+    }
+
+    private void ValidateUnlockState(
+    RunManager runManager,
+    bool expectCannon,
+    bool expectChariot
+)
+    {
+        List<PieceType> unlockedPieceTypes =
+            runManager.GetUnlockedPieceTypes();
+
+        bool hasSoldier =
+            unlockedPieceTypes.Contains(PieceType.Soldier);
+
+        bool hasHorse =
+            unlockedPieceTypes.Contains(PieceType.Horse);
+
+        bool hasCannon =
+            unlockedPieceTypes.Contains(PieceType.Cannon);
+
+        bool hasChariot =
+            unlockedPieceTypes.Contains(PieceType.Chariot);
+
+        bool passed =
+            hasSoldier &&
+            hasHorse &&
+            hasCannon == expectCannon &&
+            hasChariot == expectChariot;
+
+        if (passed)
+        {
+            Debug.Log("Unlock State Test: PASS");
+        }
+        else
+        {
+            Debug.LogError(
+                $"Unlock State Test: FAIL / " +
+                $"Soldier: {hasSoldier}, " +
+                $"Horse: {hasHorse}, " +
+                $"Cannon: {hasCannon}, " +
+                $"Chariot: {hasChariot}"
+            );
+        }
+    }
+
+    private void ValidateShopItems(RunManager runManager)
+    {
+        Shop shop = runManager.CurrentShop;
+
+        if (shop == null)
+        {
+            Debug.LogError("Shop Items Test: FAIL / CurrentShop is null");
+            return;
+        }
+
+        List<PieceType> unlockedPieceTypes =
+            runManager.GetUnlockedPieceTypes();
+
+        List<ShopItem> items = shop.GetItems();
+
+        if (items.Count != unlockedPieceTypes.Count)
+        {
+            Debug.LogError(
+                $"Shop Items Test: FAIL / " +
+                $"Unlocked Count: {unlockedPieceTypes.Count}, " +
+                $"Shop Item Count: {items.Count}"
+            );
+
+            return;
+        }
+
+        for (int i = 0; i < unlockedPieceTypes.Count; i++)
+        {
+            if (items[i].PieceType != unlockedPieceTypes[i])
+            {
+                Debug.LogError(
+                    $"Shop Items Test: FAIL / " +
+                    $"Index {i}, " +
+                    $"Expected: {unlockedPieceTypes[i]}, " +
+                    $"Actual: {items[i].PieceType}"
+                );
+
+                return;
+            }
+        }
+
+        Debug.Log("Shop Items Test: PASS");
     }
 
     private void PrintArmy(PlayerArmy playerArmy)

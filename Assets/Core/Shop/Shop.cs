@@ -31,8 +31,12 @@ public class Shop
 
     private void GenerateItems()
     {
-        AddPieceItem(PieceType.Soldier);
-        AddPieceItem(PieceType.Horse);
+        List<PieceType> unlockedPieceTypes = _runManager.GetUnlockedPieceTypes();
+
+        foreach (PieceType type in unlockedPieceTypes)
+        {
+            AddPieceItem(type);
+        }
     }
 
     private void AddPieceItem(PieceType type)

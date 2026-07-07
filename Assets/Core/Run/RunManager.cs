@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class RunManager
 {
     private const int NormalBattleWinGold = 5;
@@ -17,6 +19,7 @@ public class RunManager
     private Board _currentBoard;
     private BattleManager _currentBattleManager;
     private Shop _currentShop;
+    private readonly List<PieceType> _unlockedPieceTypes;
 
     public PlayerArmy PlayerArmy => _playerArmy;
     public int StageIndex => _stageIndex;
@@ -28,6 +31,10 @@ public class RunManager
     public Board CurrentBoard => _currentBoard;
     public BattleManager CurrentBattleManager => _currentBattleManager;
     public Shop CurrentShop => _currentShop;
+    public List<PieceType> GetUnlockedPieceTypes()
+    {
+        return new List<PieceType>(_unlockedPieceTypes);
+    }
 
     public RunManager()
     {
@@ -41,6 +48,8 @@ public class RunManager
         _currentBoard = null;
         _currentBattleManager = null;
         _currentShop = null;
+        _unlockedPieceTypes = new List<PieceType>();
+        InitializeUnlockedPieces();
     }
 
     public void StartRun()
@@ -52,8 +61,16 @@ public class RunManager
         _populationPrice = 5;
         _isRunOver = false;
         _currentState = RunState.Battle;
+        InitializeUnlockedPieces();
 
         StartBattle();
+    }
+
+    private void InitializeUnlockedPieces()
+    {
+        _unlockedPieceTypes.Clear();
+        UnlockPiece(PieceType.Soldier);
+        UnlockPiece(PieceType.Horse);
     }
 
     private void StartBattle()
@@ -108,6 +125,7 @@ public class RunManager
         {
             ApplyBossBattleReward();
             _bossClearCount++;
+            UpdatePieceUnlocks();
         }
         else
         {
@@ -216,6 +234,29 @@ public class RunManager
     {
         AddGold(BossBattleWinGold);
         ApplyInterest();
+    }
+
+    private void UpdatePieceUnlocks()
+    {
+        if (_bossClearCount >= 1)
+        {
+            UnlockPiece(PieceType.Cannon);
+        }
+
+        if (_bossClearCount >= 2)
+        {
+            UnlockPiece(PieceType.Chariot);
+        }
+    }
+
+    private void UnlockPiece(PieceType type)
+    {
+        if (_unlockedPieceTypes.Contains(type))
+        {
+            return;
+        }
+
+        _unlockedPieceTypes.Add(type);
     }
 
     private bool IsBossStage()
