@@ -1,4 +1,4 @@
-public class Card
+public class TacticalCard
 {
     private readonly int _id;
     private readonly string _name;
@@ -14,7 +14,7 @@ public class Card
     public TacticalCardEffect Effect => _effect;
     public CardUseTiming UseTiming => _useTiming;
 
-    public Card()
+    public TacticalCard()
     {
         _id = -1;
         _name = "";
@@ -24,7 +24,7 @@ public class Card
         _useTiming = CardUseTiming.None;
     }
 
-    public Card(int id, string name, string description, CardType cardType, TacticalCardEffect effect, CardUseTiming useTiming)
+    public TacticalCard(int id, string name, string description, CardType cardType, TacticalCardEffect effect, CardUseTiming useTiming)
     {
         _id = id;
         _name = name;
@@ -41,7 +41,7 @@ public class Card
             return true;
         }
 
-        if (obj is not Card card)
+        if (obj is not TacticalCard card)
         {
             return false;
         }
