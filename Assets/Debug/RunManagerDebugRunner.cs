@@ -142,6 +142,175 @@ public class RunManagerDebugRunner : MonoBehaviour
 
         ValidateChoicesCleared(runManager);
 
+        Debug.Log("===== Fill Augment Slots Test =====");
+
+        for (int selectionNumber = 3; selectionNumber <= 5; selectionNumber++)
+        {
+            AdvanceToNextBoss(runManager);
+
+            ValidateState(
+                runManager,
+                RunState.AugmentSelection,
+                $"{selectionNumber}th Boss State Test"
+            );
+
+            ValidateAugmentChoices(runManager);
+
+            List<Augment> choices =
+                runManager.GetAugmentChoices();
+
+            int selectedID = choices[0].ID;
+
+            runManager.SelectAugment(0);
+
+            ValidateState(
+                runManager,
+                RunState.Shop,
+                $"After {selectionNumber}th Selection State Test"
+            );
+
+            ValidateSelectedAugment(
+                runManager,
+                selectedID
+            );
+
+            ValidateChoicesCleared(runManager);
+        }
+
+        PrintOwnedAugments(runManager);
+
+        ValidateOwnedAugmentCount(
+            runManager,
+            5,
+            "Max Augment Count Test"
+        );
+
+        Debug.Log("===== Augment Replacement Test =====");
+
+        AdvanceToNextBoss(runManager);
+
+        ValidateState(
+            runManager,
+            RunState.AugmentSelection,
+            "Replacement Boss State Test"
+        );
+
+        ValidateAugmentChoices(runManager);
+
+        List<Augment> replacementChoices =
+            runManager.GetAugmentChoices();
+
+        int pendingAugmentID = replacementChoices[0].ID;
+
+        List<Augment> ownedBeforeReplacement =
+            runManager.GetCurrentAugments();
+
+        int replacedAugmentID = ownedBeforeReplacement[0].ID;
+
+        runManager.SelectAugment(0);
+
+        ValidateState(
+            runManager,
+            RunState.AugmentReplacement,
+            "Enter AugmentReplacement State Test"
+        );
+
+        ValidatePendingAugment(
+            runManager,
+            pendingAugmentID
+        );
+
+        ValidateChoicesCleared(runManager);
+
+        runManager.ReplaceAugment(-1);
+
+        ValidateState(
+            runManager,
+            RunState.AugmentReplacement,
+            "Invalid Replacement Index State Test"
+        );
+
+        ValidatePendingAugment(
+            runManager,
+            pendingAugmentID
+        );
+
+        runManager.ReplaceAugment(0);
+
+        PrintOwnedAugments(runManager);
+
+        ValidateState(
+            runManager,
+            RunState.Shop,
+            "After Replacement State Test"
+        );
+
+        ValidateOwnedAugmentCount(
+            runManager,
+            5,
+            "Replacement Count Test"
+        );
+
+        ValidateReplacementResult(
+            runManager,
+            replacedAugmentID,
+            pendingAugmentID
+        );
+
+        ValidatePendingAugmentCleared(runManager);
+        ValidateShopExists(runManager);
+
+        Debug.Log("===== Skip Augment Test =====");
+
+        AdvanceToNextBoss(runManager);
+
+        ValidateState(
+            runManager,
+            RunState.AugmentSelection,
+            "Skip Boss State Test"
+        );
+
+        ValidateAugmentChoices(runManager);
+
+        List<Augment> ownedBeforeSkip =
+            runManager.GetCurrentAugments();
+
+        List<Augment> skipChoices =
+            runManager.GetAugmentChoices();
+
+        int skippedAugmentID = skipChoices[0].ID;
+
+        runManager.SelectAugment(0);
+
+        ValidateState(
+            runManager,
+            RunState.AugmentReplacement,
+            "Before Skip State Test"
+        );
+
+        ValidatePendingAugment(
+            runManager,
+            skippedAugmentID
+        );
+
+        runManager.SkipAugment();
+
+        PrintOwnedAugments(runManager);
+
+        ValidateState(
+            runManager,
+            RunState.Shop,
+            "After Skip State Test"
+        );
+
+        ValidateSkipResult(
+            runManager,
+            ownedBeforeSkip
+        );
+
+        ValidatePendingAugmentCleared(runManager);
+        ValidateShopExists(runManager);
+
         Debug.Log("===== Augment Selection Debug End =====");
     }
 
@@ -656,6 +825,167 @@ public class RunManagerDebugRunner : MonoBehaviour
             $"Selected ID {selectedID} not found"
         );
     }
+
+
+    private void ValidateOwnedAugmentCount(
+        RunManager runManager,
+        int expectedCount,
+        string testName
+    )
+    {
+        int actualCount =
+            runManager.GetCurrentAugments().Count;
+
+        if (actualCount == expectedCount)
+        {
+            Debug.Log($"{testName}: PASS");
+        }
+        else
+        {
+            Debug.LogError(
+                $"{testName}: FAIL / " +
+                $"Expected: {expectedCount}, " +
+                $"Actual: {actualCount}"
+            );
+        }
+    }
+
+    private void ValidatePendingAugment(
+        RunManager runManager,
+        int expectedID
+    )
+    {
+        Augment pendingAugment =
+            runManager.PendingAugment;
+
+        if (
+            pendingAugment != null &&
+            pendingAugment.ID == expectedID
+        )
+        {
+            Debug.Log("Pending Augment Test: PASS");
+        }
+        else
+        {
+            string actual =
+                pendingAugment == null
+                    ? "null"
+                    : pendingAugment.ID.ToString();
+
+            Debug.LogError(
+                $"Pending Augment Test: FAIL / " +
+                $"Expected ID: {expectedID}, " +
+                $"Actual: {actual}"
+            );
+        }
+    }
+
+    private void ValidatePendingAugmentCleared(
+        RunManager runManager
+    )
+    {
+        if (runManager.PendingAugment == null)
+        {
+            Debug.Log("Pending Augment Clear Test: PASS");
+        }
+        else
+        {
+            Debug.LogError(
+                "Pending Augment Clear Test: FAIL"
+            );
+        }
+    }
+
+    private void ValidateReplacementResult(
+        RunManager runManager,
+        int replacedAugmentID,
+        int newAugmentID
+    )
+    {
+        List<Augment> ownedAugments =
+            runManager.GetCurrentAugments();
+
+        bool hasOldAugment = false;
+        bool hasNewAugment = false;
+
+        foreach (Augment augment in ownedAugments)
+        {
+            if (augment.ID == replacedAugmentID)
+            {
+                hasOldAugment = true;
+            }
+
+            if (augment.ID == newAugmentID)
+            {
+                hasNewAugment = true;
+            }
+        }
+
+        if (!hasOldAugment && hasNewAugment)
+        {
+            Debug.Log("Replacement Result Test: PASS");
+        }
+        else
+        {
+            Debug.LogError(
+                $"Replacement Result Test: FAIL / " +
+                $"Old Augment Exists: {hasOldAugment}, " +
+                $"New Augment Exists: {hasNewAugment}"
+            );
+        }
+    }
+
+    private void ValidateSkipResult(
+        RunManager runManager,
+        List<Augment> expectedAugments
+    )
+    {
+        List<Augment> actualAugments =
+            runManager.GetCurrentAugments();
+
+        if (actualAugments.Count != expectedAugments.Count)
+        {
+            Debug.LogError(
+                $"Skip Result Test: FAIL / " +
+                $"Expected Count: {expectedAugments.Count}, " +
+                $"Actual Count: {actualAugments.Count}"
+            );
+
+            return;
+        }
+
+        for (int i = 0; i < expectedAugments.Count; i++)
+        {
+            if (actualAugments[i].ID != expectedAugments[i].ID)
+            {
+                Debug.LogError(
+                    $"Skip Result Test: FAIL / " +
+                    $"Index: {i}, " +
+                    $"Expected ID: {expectedAugments[i].ID}, " +
+                    $"Actual ID: {actualAugments[i].ID}"
+                );
+
+                return;
+            }
+        }
+
+        Debug.Log("Skip Result Test: PASS");
+    }
+
+    private void ValidateShopExists(
+        RunManager runManager
+    )
+    {
+        if (runManager.CurrentShop != null)
+        {
+            Debug.Log("Shop Exists Test: PASS");
+        }
+        else
+        {
+            Debug.LogError("Shop Exists Test: FAIL");
+        }
+    }
+
 
     private void ValidateChoicesCleared(RunManager runManager)
     {
