@@ -109,11 +109,40 @@ public class Shop
             return false;
         }
 
+        if (item.ItemType == ShopItemType.Piece)
+        {
+            return BuyPieceItem(item);
+        }
+        else if (item.ItemType == ShopItemType.CardChest)
+        {
+            return BuyCardChestItem(item);
+        }
+
+        return false;
+    }
+
+    private bool BuyPieceItem(ShopItem item)
+    {
         if (CanBuyPiece(item.PieceType))
         {
             _runManager.SpendGold(item.Price);
             _playerArmy.AddPiece(item.PieceType);
             item.MarkSold();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool BuyCardChestItem(ShopItem item)
+    {
+        if (CanBuyCardChest(item))
+        {
+            _runManager.SpendGold(item.Price);
+            item.MarkSold();
+            List<TacticalCard> cardChoices = item.CardChest.GenerateCardChoices();
+            _runManager.StartCardSelection(cardChoices, item.CardChest.SelectableCardCount);
 
             return true;
         }
@@ -181,6 +210,11 @@ public class Shop
         }
 
         return true;
+    }
+
+    public bool CanBuyCardChest(ShopItem item)
+    {
+        return _runManager.CanSpendGold(item.Price);
     }
 
     private bool CanBuyPopulation()

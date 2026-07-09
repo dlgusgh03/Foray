@@ -9,6 +9,7 @@ public class RunManager
     private const int MaxInterestGold = 5;
     private const int BossStageInterval = 3;
     private const int MaxAugmentCount = 5;
+    private const int MaxCardCount = 3;
 
     private PlayerArmy _playerArmy;
     private int _stageIndex;
@@ -26,6 +27,9 @@ public class RunManager
     private readonly List<Augment> _currentAugments;
     private readonly List<Augment> _augmentChoices;
     private Augment _pendingAugment;
+    private readonly List<TacticalCard> _ownedCards; // 실제로 런 동안 보유 중인 사용 가능한 카드
+    private readonly List<TacticalCard> _currentCardChoices; // 지금 개봉한 상자에서 고를 수 있는 카드
+    private int _remainingCardSelections; // 이번 상자에서 앞으로 몇 장 더 고를 수 있는지
 
     public PlayerArmy PlayerArmy => _playerArmy;
     public int StageIndex => _stageIndex;
@@ -51,6 +55,16 @@ public class RunManager
         return new List<Augment>(_augmentChoices);
     }
     public Augment PendingAugment => _pendingAugment;
+    public List<TacticalCard> GetOwnedCards()
+    {
+        return new List<TacticalCard>(_ownedCards);
+    }
+
+    public List<TacticalCard> GetCurrentCardChoices()
+    {
+        return new List<TacticalCard>(_currentCardChoices);
+    }
+    public int RemainingCardSelections => _remainingCardSelections;
 
     public RunManager()
     {
@@ -72,6 +86,11 @@ public class RunManager
         _augmentChoices = new List<Augment>();
         InitializeAugmentChoices();
         _pendingAugment = null;
+        _ownedCards = new List<TacticalCard>();
+        InitializeOwnedCards();
+        _currentCardChoices = new List<TacticalCard>();
+        InitializeCurrentCardChoices();
+        _remainingCardSelections = 0;
     }
 
     public void StartRun()
@@ -88,6 +107,9 @@ public class RunManager
         InitializeCurrentAugments();
         InitializeAugmentChoices();
         _pendingAugment = null;
+        InitializeOwnedCards();
+        InitializeCurrentCardChoices();
+        _remainingCardSelections = 0;
 
         StartBattle();
     }
@@ -107,6 +129,16 @@ public class RunManager
     private void InitializeAugmentChoices()
     {
         _augmentChoices.Clear();
+    }
+
+    private void InitializeOwnedCards()
+    {
+        _ownedCards.Clear();
+    }
+
+    private void InitializeCurrentCardChoices()
+    {
+        _currentCardChoices.Clear();
     }
 
     private void StartBattle()
@@ -201,6 +233,15 @@ public class RunManager
         _currentShop = null;
         StartBattle();
     }
+
+    public void StartCardSelection(List<TacticalCard> cardChoices, int selectableCardCount)
+    {
+        _currentCardChoices.Clear();
+        _currentCardChoices.AddRange(cardChoices);
+        _remainingCardSelections = selectableCardCount;
+        _currentState = RunState.CardSelection;
+    }
+
 
     public void GenerateAugmentChoices()
     {
