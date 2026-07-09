@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class RunManager
 {
@@ -423,7 +424,10 @@ public class RunManager
 
     private MapPreset SelectMapPreset()
     {
-        return MapPreset.CreateSquare(7);
+        int stageIndex = _stageIndex;
+        int length = MapPreset.GetMapLengthForStage(stageIndex);
+
+        return MapPreset.CreateSquare(length);
     }
 
     private EnemyPreset SelectEnemyPreset()

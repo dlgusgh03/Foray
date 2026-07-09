@@ -23,6 +23,26 @@ public class MapPreset
         _enemyDeployPositions = enemyDeployPositions;
     }
 
+    public static int GetMapLengthForStage(int stageIndex)
+    {
+        if (stageIndex <= 1) // stage 1
+        {
+            return 5;
+        }
+        else if (stageIndex <= 4) // stage 2 ~ 4
+        {
+            return 7;
+        }
+        else if (stageIndex <= 7) // stage 5 ~ 7
+        {
+            return 9;
+        }
+        else // stage 8 ~ 10
+        {
+            return 11;
+        }
+    }
+
     public static MapPreset CreateSquare(int length)
     {
         List<BoardPosition> blockedPositions = new List<BoardPosition>();
