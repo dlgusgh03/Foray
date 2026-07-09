@@ -242,6 +242,60 @@ public class RunManager
         _currentState = RunState.CardSelection;
     }
 
+    public void SelectCard(int index)
+    {
+        if (_currentState != RunState.CardSelection)
+        {
+            return;
+        }
+
+        if (index < 0 || index >= _currentCardChoices.Count)
+        {
+            return;
+        }
+
+        TacticalCard selectedCard = _currentCardChoices[index];
+
+        if (selectedCard.UseTiming != CardUseTiming.OnAcquire &&
+            _ownedCards.Count >= MaxCardCount)
+        {
+            return;
+        }
+
+        _currentCardChoices.RemoveAt(index);
+
+        if (selectedCard.UseTiming == CardUseTiming.OnAcquire)
+        {
+            if (selectedCard.Effect != null)
+            {
+                selectedCard.Effect.Apply(this);
+            }
+        }
+        else
+        {
+            AddCard(selectedCard);
+        }
+
+        _remainingCardSelections--;
+
+        if (_remainingCardSelections == 0)
+        {
+            _currentCardChoices.Clear();
+            _currentState = RunState.Shop;
+        }
+    }
+
+    public void SkipCardSelection()
+    {
+        if (_currentState != RunState.CardSelection)
+        {
+            return;
+        }
+
+        _currentCardChoices.Clear();
+        _remainingCardSelections = 0;
+        _currentState = RunState.Shop;
+    }
 
     public void GenerateAugmentChoices()
     {
@@ -464,6 +518,31 @@ public class RunManager
         }
 
         _currentAugments.RemoveAt(index);
+    }
+
+    private void AddCard(TacticalCard card)
+    {
+        if (_ownedCards.Count >= MaxCardCount)
+        {
+            return;
+        }
+
+        _ownedCards.Add(card);
+    }
+
+    private void RemoveCard(int index)
+    {
+        if (index < 0 || index >= _ownedCards.Count)
+        {
+            return;
+        }
+
+        if (_ownedCards[index] == null)
+        {
+            return;
+        }
+
+        _ownedCards.RemoveAt(index);
     }
 
     private bool IsBossStage()
