@@ -116,4 +116,19 @@ public static class TacticalCardCatalog
 
         return cards;
     }
+
+    public static int? GetSellPrice(CardType cardType)
+    {
+        switch (cardType)
+        {
+            case CardType.Tactical:
+                return 2;
+
+            case CardType.Cursed:
+                return 1;
+
+            default:
+                return null;
+        }
+    }
 }

@@ -297,6 +297,27 @@ public class RunManager
         _currentState = RunState.Shop;
     }
 
+    public bool SellCard(int index)
+    {
+        if(index < 0 || index >= _ownedCards.Count)
+        {
+            return false;
+        }
+
+        CardType cardType = _ownedCards[index].CardType;
+        int? price = TacticalCardCatalog.GetSellPrice(cardType);
+
+        if(price == null)
+        {
+            return false;
+        }
+
+        _ownedCards.RemoveAt(index);
+        AddGold(price.Value);
+
+        return true;
+    }
+
     public void GenerateAugmentChoices()
     {
         _augmentChoices.Clear();
@@ -457,6 +478,7 @@ public class RunManager
     {
         int interest = CalculateInterest();
         AddGold(interest);
+
         return interest;
     }
 

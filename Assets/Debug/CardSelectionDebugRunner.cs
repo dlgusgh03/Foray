@@ -12,6 +12,11 @@ public class CardSelectionDebugRunner : MonoBehaviour
         TestSkipCardSelection();
         TestSelectNormalCardAtMaxCapacity();
 
+        TestSellTacticalCard();
+        TestSellCursedCard();
+        TestSellCardWithInvalidIndex();
+        TestSellCardDuringSelectionAndContinue();
+
         Debug.Log("===== CARD SELECTION DEBUG END =====");
     }
 
@@ -272,6 +277,264 @@ public class CardSelectionDebugRunner : MonoBehaviour
         runManager.SkipCardSelection();
     }
 
+    private void TestSellTacticalCard()
+    {
+        Debug.Log("\n--- Test 5: Sell Tactical Card ---");
+
+        RunManager runManager = new RunManager();
+        runManager.StartRun();
+
+        TacticalCard card =
+            FindStorableCardByType(CardType.Tactical);
+
+        if (card == null)
+        {
+            Debug.LogError("Storable tactical card was not found.");
+            return;
+        }
+
+        AddOwnedCardForDebug(runManager, card);
+
+        int? expectedPrice =
+            TacticalCardCatalog.GetSellPrice(card.CardType);
+
+        int previousOwnedCount =
+            runManager.GetOwnedCards().Count;
+
+        int previousGold = runManager.Gold;
+
+        bool sellResult = runManager.SellCard(0);
+
+        int currentOwnedCount =
+            runManager.GetOwnedCards().Count;
+
+        int currentGold = runManager.Gold;
+
+        bool result =
+            expectedPrice != null &&
+            sellResult &&
+            currentOwnedCount == previousOwnedCount - 1 &&
+            currentGold == previousGold + expectedPrice.Value;
+
+        Debug.Log($"Sold Card: {card.Name}");
+        Debug.Log($"Card Type: {card.CardType}");
+        Debug.Log($"Sell Result: {sellResult}");
+
+        Debug.Log(
+            $"Owned Card Count: " +
+            $"{previousOwnedCount} -> {currentOwnedCount}"
+        );
+
+        Debug.Log(
+            $"Gold: {previousGold} -> {currentGold} " +
+            $"(Expected: {previousGold + expectedPrice})"
+        );
+
+        Debug.Log($"Result: {result}");
+    }
+
+    private void TestSellCursedCard()
+    {
+        Debug.Log("\n--- Test 6: Sell Cursed Card ---");
+
+        RunManager runManager = new RunManager();
+        runManager.StartRun();
+
+        TacticalCard card =
+            FindStorableCardByType(CardType.Cursed);
+
+        if (card == null)
+        {
+            Debug.LogError("Storable cursed card was not found.");
+            return;
+        }
+
+        AddOwnedCardForDebug(runManager, card);
+
+        int? expectedPrice =
+            TacticalCardCatalog.GetSellPrice(card.CardType);
+
+        int previousOwnedCount =
+            runManager.GetOwnedCards().Count;
+
+        int previousGold = runManager.Gold;
+
+        bool sellResult = runManager.SellCard(0);
+
+        int currentOwnedCount =
+            runManager.GetOwnedCards().Count;
+
+        int currentGold = runManager.Gold;
+
+        bool result =
+            expectedPrice != null &&
+            sellResult &&
+            currentOwnedCount == previousOwnedCount - 1 &&
+            currentGold == previousGold + expectedPrice.Value;
+
+        Debug.Log($"Sold Card: {card.Name}");
+        Debug.Log($"Card Type: {card.CardType}");
+        Debug.Log($"Sell Result: {sellResult}");
+
+        Debug.Log(
+            $"Owned Card Count: " +
+            $"{previousOwnedCount} -> {currentOwnedCount}"
+        );
+
+        Debug.Log(
+            $"Gold: {previousGold} -> {currentGold} " +
+            $"(Expected: {previousGold + expectedPrice})"
+        );
+
+        Debug.Log($"Result: {result}");
+    }
+
+    private void TestSellCardWithInvalidIndex()
+    {
+        Debug.Log("\n--- Test 7: Sell Card With Invalid Index ---");
+
+        RunManager runManager = new RunManager();
+        runManager.StartRun();
+
+        TacticalCard card =
+            FindStorableCardByType(CardType.Tactical);
+
+        if (card == null)
+        {
+            Debug.LogError("Storable tactical card was not found.");
+            return;
+        }
+
+        AddOwnedCardForDebug(runManager, card);
+
+        int previousOwnedCount =
+            runManager.GetOwnedCards().Count;
+
+        int previousGold = runManager.Gold;
+
+        bool negativeResult =
+            runManager.SellCard(-1);
+
+        bool outOfRangeResult =
+            runManager.SellCard(999);
+
+        bool result =
+            !negativeResult &&
+            !outOfRangeResult &&
+            runManager.GetOwnedCards().Count ==
+                previousOwnedCount &&
+            runManager.Gold == previousGold;
+
+        Debug.Log($"Negative Index Result: {negativeResult}");
+        Debug.Log($"Out Of Range Result: {outOfRangeResult}");
+
+        Debug.Log(
+            $"Owned Card Count: " +
+            $"{previousOwnedCount} -> " +
+            $"{runManager.GetOwnedCards().Count} " +
+            $"(Expected: No Change)"
+        );
+
+        Debug.Log(
+            $"Gold: {previousGold} -> {runManager.Gold} " +
+            $"(Expected: No Change)"
+        );
+
+        Debug.Log($"Result: {result}");
+    }
+
+    private void TestSellCardDuringSelectionAndContinue()
+    {
+        Debug.Log(
+            "\n--- Test 8: Sell Card During Selection And Continue ---"
+        );
+
+        RunManager runManager = new RunManager();
+        runManager.StartRun();
+
+        TacticalCard ownedCard =
+            FindStorableCardByType(CardType.Tactical);
+
+        TacticalCard extraCard =
+            FindCardByTiming(CardUseTiming.BeforePlayerAction);
+
+        if (ownedCard == null || extraCard == null)
+        {
+            Debug.LogError("Required test cards were not found.");
+            return;
+        }
+
+        AddOwnedCardForDebug(runManager, ownedCard);
+        AddOwnedCardForDebug(runManager, ownedCard);
+        AddOwnedCardForDebug(runManager, ownedCard);
+
+        List<TacticalCard> choices = new List<TacticalCard>()
+        {
+            extraCard
+        };
+
+        runManager.StartCardSelection(choices, 1);
+
+        runManager.SelectCard(0);
+
+        bool selectionBlocked =
+            runManager.GetOwnedCards().Count == 3 &&
+            runManager.GetCurrentCardChoices().Count == 1 &&
+            runManager.RemainingCardSelections == 1 &&
+            runManager.CurrentState == RunState.CardSelection;
+
+        int previousGold = runManager.Gold;
+
+        bool sellResult = runManager.SellCard(0);
+
+        bool slotCreated =
+            sellResult &&
+            runManager.GetOwnedCards().Count == 2 &&
+            runManager.CurrentState == RunState.CardSelection;
+
+        runManager.SelectCard(0);
+
+        bool selectionCompleted =
+            runManager.GetOwnedCards().Count == 3 &&
+            runManager.GetCurrentCardChoices().Count == 0 &&
+            runManager.RemainingCardSelections == 0 &&
+            runManager.CurrentState == RunState.Shop;
+
+        bool result =
+            selectionBlocked &&
+            slotCreated &&
+            selectionCompleted &&
+            runManager.Gold > previousGold;
+
+        Debug.Log(
+            $"Selection Blocked At Capacity: {selectionBlocked}"
+        );
+
+        Debug.Log($"Sell Result: {sellResult}");
+
+        Debug.Log(
+            $"Slot Created During Selection: {slotCreated}"
+        );
+
+        Debug.Log(
+            $"Selection Completed After Selling: " +
+            $"{selectionCompleted}"
+        );
+
+        Debug.Log(
+            $"Final Owned Card Count: " +
+            $"{runManager.GetOwnedCards().Count} " +
+            $"(Expected: 3)"
+        );
+
+        Debug.Log(
+            $"Final Run State: {runManager.CurrentState} " +
+            $"(Expected: Shop)"
+        );
+
+        Debug.Log($"Result: {result}");
+    }
+
     private void AddOwnedCardForDebug(
         RunManager runManager,
         TacticalCard card)
@@ -297,6 +560,30 @@ public class CardSelectionDebugRunner : MonoBehaviour
             {
                 return card;
             }
+        }
+
+        return null;
+    }
+
+    private TacticalCard FindStorableCardByType(
+        CardType cardType)
+    {
+        List<TacticalCard> cards =
+            TacticalCardCatalog.GetAllCards();
+
+        foreach (TacticalCard card in cards)
+        {
+            if (card.CardType != cardType)
+            {
+                continue;
+            }
+
+            if (card.UseTiming == CardUseTiming.OnAcquire)
+            {
+                continue;
+            }
+
+            return card;
         }
 
         return null;
