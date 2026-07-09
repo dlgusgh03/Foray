@@ -58,8 +58,7 @@ public class CardDebugRunner : MonoBehaviour
 
         CardChest chest = new CardChest(
             CardChestType.Supply,
-            chestSize,
-            5
+            chestSize
         );
 
         List<TacticalCard> choices =
@@ -95,8 +94,7 @@ public class CardDebugRunner : MonoBehaviour
 
         CardChest chest = new CardChest(
             CardChestType.Cursed,
-            chestSize,
-            5
+            chestSize
         );
 
         List<TacticalCard> choices =
@@ -132,8 +130,7 @@ public class CardDebugRunner : MonoBehaviour
 
         CardChest chest = new CardChest(
             CardChestType.Sealed,
-            chestSize,
-            5
+            chestSize
         );
 
         List<TacticalCard> choices =
@@ -171,8 +168,7 @@ public class CardDebugRunner : MonoBehaviour
         {
             CardChest chest = new CardChest(
                 CardChestType.Sealed,
-                CardChestSize.Large,
-                5
+                CardChestSize.Large
             );
 
             List<TacticalCard> choices =

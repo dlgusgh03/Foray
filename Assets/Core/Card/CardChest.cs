@@ -8,17 +8,13 @@ public class CardChest
     private readonly CardChestSize _chestSize;
     private readonly int _cardsPerChest;
     private readonly int _selectableCardCount;
-    private readonly int _price;
-    private bool _isSold;
 
     public CardChestType ChestType => _chestType;
     public CardChestSize ChestSize => _chestSize;
     public int CardsPerChest => _cardsPerChest;
     public int SelectableCardCount => _selectableCardCount;
-    public int Price => _price;
-    public bool IsSold => _isSold;
 
-    public CardChest(CardChestType chestType, CardChestSize chestSize, int price)
+    public CardChest(CardChestType chestType, CardChestSize chestSize)
     {
         _chestType = chestType;
         _chestSize = chestSize;
@@ -34,14 +30,6 @@ public class CardChest
             _cardsPerChest = 5;
             _selectableCardCount = 2;
         }
-
-        _price = price;
-        _isSold = false;
-    }
-
-    public void MarkSold()
-    {
-        _isSold = true;
     }
 
     public List<TacticalCard> GenerateCardChoices()

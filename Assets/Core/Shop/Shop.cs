@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 public class Shop
 {
+    private const int StandardChestPrice = 5;
+    private const int LargeChestPrice = 8;
     private const int PopulationPriceIncreaseAmount = 3;
     private const int PopulationIncreaseAmount = 2;
 
@@ -37,6 +39,9 @@ public class Shop
         {
             AddPieceItem(type);
         }
+
+        AddRandomCardChestItem();
+        AddRandomCardChestItem();
     }
 
     private void AddPieceItem(PieceType type)
@@ -49,6 +54,45 @@ public class Shop
         }
 
         _items.Add(new ShopItem(type, price.Value));
+    }
+
+    private void AddRandomCardChestItem()
+    {
+        CardChestType chestType = CardChestType.None;
+        CardChestSize chestSize = CardChestSize.None;
+
+        int randomChestType = UnityEngine.Random.Range(0, 100);
+        int randomChestSize = UnityEngine.Random.Range(0, 100);
+
+        int price = 0;
+
+        if (randomChestType <= 74)
+        {
+            chestType = CardChestType.Supply;
+        }
+        else if (randomChestType <= 94)
+        {
+            chestType = CardChestType.Sealed;
+        }
+        else
+        {
+            chestType = CardChestType.Cursed;
+        }
+
+        if (randomChestSize <= 64)
+        {
+            chestSize = CardChestSize.Standard;
+            price = StandardChestPrice;
+        }
+        else
+        {
+            chestSize = CardChestSize.Large;
+            price = LargeChestPrice;
+        }
+
+        CardChest chest = new CardChest(chestType, chestSize);
+        ShopItem item = new ShopItem(chest, price);
+        _items.Add(item);
     }
 
     public bool BuyItem(int index)
