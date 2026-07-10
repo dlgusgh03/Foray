@@ -7,20 +7,23 @@ public class MapPreset
     private readonly List<BoardPosition> _blockedPositions;
     private readonly List<BoardPosition> _playerDeployPositions;
     private readonly List<BoardPosition> _enemyDeployPositions;
+    private readonly int _deployRows;
 
     public int Width => _width;
     public int Height => _height;
     public List<BoardPosition> BlockedPositions => _blockedPositions;
     public List<BoardPosition> PlayerDeployPositions => _playerDeployPositions;
     public List<BoardPosition> EnemyDeployPositions => _enemyDeployPositions;
+    public int DeployRows => _deployRows;
 
-    public MapPreset(int width, int height, List<BoardPosition> blockedPositions, List<BoardPosition> playerDeployPositions, List<BoardPosition> enemyDeployPositions)
+    public MapPreset(int width, int height, List<BoardPosition> blockedPositions, List<BoardPosition> playerDeployPositions, List<BoardPosition> enemyDeployPositions, int deployRows)
     {
         _width = width;
         _height = height;
         _blockedPositions = blockedPositions;
         _playerDeployPositions = playerDeployPositions;
         _enemyDeployPositions = enemyDeployPositions;
+        _deployRows = deployRows;
     }
 
     public static int GetMapLengthForStage(int stageIndex)
@@ -49,7 +52,7 @@ public class MapPreset
         List<BoardPosition> playerDeployPositions = new List<BoardPosition>();
         List<BoardPosition> enemyDeployPositions = new List<BoardPosition>();
 
-        int deployRows = 2;
+        int deployRows = (length - 1) / 2; ;
 
         for (int y = 0; y < deployRows; y++)
         {
@@ -67,6 +70,6 @@ public class MapPreset
             }
         }
 
-        return new MapPreset(length, length, blockedPositions, playerDeployPositions, enemyDeployPositions);
+        return new MapPreset(length, length, blockedPositions, playerDeployPositions, enemyDeployPositions, deployRows);
     }
 }

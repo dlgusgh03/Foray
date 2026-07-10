@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public static class BattleSetup
 {
@@ -13,8 +12,7 @@ public static class BattleSetup
         return CreateBattle(mapPreset, enemyPreset, playerArmy);
     }
 
-    public static BattleManager CreateBattle(MapPreset mapPreset, EnemyPreset enemyPreset, PlayerArmy playerArmy
-    )
+    public static BattleManager CreateBattle(MapPreset mapPreset, EnemyPreset enemyPreset, PlayerArmy playerArmy)
     {
         if (mapPreset == null || enemyPreset == null || playerArmy == null)
         {
@@ -31,7 +29,7 @@ public static class BattleSetup
             return null;
         }
 
-        bool enemyDeployed = DeployEnemyPieces(board, enemyPreset);
+        bool enemyDeployed = DeployEnemyPieces(board, mapPreset, enemyPreset);
 
         if (!enemyDeployed)
         {
@@ -94,23 +92,29 @@ public static class BattleSetup
         return true;
     }
 
-    private static bool DeployEnemyPieces(Board board, EnemyPreset enemyPreset)
+    private static bool DeployEnemyPieces(Board board, MapPreset mapPreset, EnemyPreset enemyPreset)
     {
-        if (board == null || enemyPreset == null)
+        if (board == null || enemyPreset == null || enemyPreset == null)
         {
             return false;
         }
 
         foreach (EnemyPieceData enemyPieceData in enemyPreset.EnemyPieces)
         {
-            Piece enemyPiece = new Piece(enemyPieceData.Type, PieceOwner.Enemy, enemyPieceData.Position
-            );
+            BoardPosition deployPosition = enemyPieceData.DeployPosition;
 
-            bool placed = board.PlacePiece(enemyPiece, enemyPiece.Position);
+            int actualX = deployPosition.X;
+            int actualY = mapPreset.Height - mapPreset.DeployRows + deployPosition.Y;
+            BoardPosition actualPosition = new BoardPosition(actualX, actualY);
+            
+            Piece enemyPiece = new Piece(enemyPieceData.Type, PieceOwner.Enemy, actualPosition);
+
+
+            bool placed = board.PlacePiece(enemyPiece, actualPosition);
 
             if (!placed)
             {
-                Debug.LogError($"BattleSetup failed: could not place enemy piece {enemyPieceData.Type} at {enemyPieceData.Position}.");
+                Debug.LogError($"BattleSetup failed: could not place enemy piece {enemyPieceData.Type} at {actualPosition}.");
                 return false;
             }
         }

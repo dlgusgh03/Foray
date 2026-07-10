@@ -1,14 +1,14 @@
 public class EnemyPieceData
 {
     private readonly PieceType _type;
-    private readonly BoardPosition _position;
+    private readonly BoardPosition _deployPosition;
 
     public PieceType Type => _type;
-    public BoardPosition Position => _position;
+    public BoardPosition DeployPosition => _deployPosition;
 
-    public EnemyPieceData(PieceType type, BoardPosition position)
+    public EnemyPieceData(PieceType type, BoardPosition deployPosition)
     {
         _type = type;
-        _position = position;
+        _deployPosition = deployPosition;
     }
 }
