@@ -432,7 +432,7 @@ public class RunManager
 
     private EnemyPreset SelectEnemyPreset()
     {
-        return EnemyPreset.CreateEasySoldiers();
+        return EnemyPresetCatalog.Create(_stageIndex, _roundIndex);
     }
 
     public void AddGold(int amount)

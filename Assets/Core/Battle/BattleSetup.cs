@@ -5,8 +5,9 @@ public static class BattleSetup
 {
     public static BattleManager CreateBasicBattle()
     {
-        MapPreset mapPreset = MapPreset.CreateSquare(7);
-        EnemyPreset enemyPreset = EnemyPreset.CreateEasySoldiers();
+        int length = MapPreset.GetMapLengthForStage(1);
+        MapPreset mapPreset = MapPreset.CreateSquare(length);
+        EnemyPreset enemyPreset = EnemyPresetCatalog.Create(1, 1);
         PlayerArmy playerArmy = new PlayerArmy();
 
         return CreateBattle(mapPreset, enemyPreset, playerArmy);
@@ -94,7 +95,7 @@ public static class BattleSetup
 
     private static bool DeployEnemyPieces(Board board, MapPreset mapPreset, EnemyPreset enemyPreset)
     {
-        if (board == null || enemyPreset == null || enemyPreset == null)
+        if (board == null || mapPreset == null || enemyPreset == null)
         {
             return false;
         }
