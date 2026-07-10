@@ -120,4 +120,12 @@ public class TurnManager
     {
         _currentTurnOwner = _currentTurnOwner == PieceOwner.Player ? PieceOwner.Enemy : PieceOwner.Player;
     }
+
+#if UNITY_EDITOR
+    public void DebugForceBattleResult(PieceOwner winner)
+    {
+        _isBattleOver = true;
+        _winner = winner;
+    }
+#endif
 }

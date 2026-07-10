@@ -51,4 +51,11 @@ public class BattleManager
     {
         return _turnManager.Winner;
     }
+
+#if UNITY_EDITOR
+    public void DebugForceBattleResult(PieceOwner winner)
+    {
+        _turnManager.DebugForceBattleResult(winner);
+    }
+#endif
 }
