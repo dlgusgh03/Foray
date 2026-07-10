@@ -141,6 +141,7 @@ GameObject:
   - component: {fileID: 456220544}
   - component: {fileID: 456220545}
   - component: {fileID: 456220546}
+  - component: {fileID: 456220547}
   m_Layer: 0
   m_Name: DebugRunner
   m_TagString: Untagged
@@ -314,11 +315,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 456220532}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62ccfe256545bd240831a056ba47859c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPresetDebugRunner
+--- !u!114 &456220547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98d1a64c2db4cff4e996f6f0867ac5d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RunClearDebugRunner
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

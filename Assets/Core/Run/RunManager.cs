@@ -8,6 +8,8 @@ public class RunManager
     private const int BossBattleWinGold = 10;
     private const int InterestGoldUnit = 5;
     private const int MaxInterestGold = 5;
+    private const int FinalStageIndex = 10;
+    private const int FinalRoundIndex = 3;
     private const int BossStageInterval = 3;
     private const int MaxAugmentCount = 5;
     private const int MaxCardCount = 3;
@@ -190,6 +192,16 @@ public class RunManager
 
     private void HandleBattleWin()
     {
+        if (IsFinalBattle())
+        {
+            ApplyBossBattleReward();
+            _bossClearCount++;
+            _isRunOver = true;
+            _currentState =  RunState.Clear;
+
+            return;
+        }
+
         if (IsBossStage())
         {
             ApplyBossBattleReward();
@@ -574,6 +586,11 @@ public class RunManager
     private bool IsBossStage()
     {
         return _roundIndex % BossStageInterval == 0;
+    }
+
+    private bool IsFinalBattle()
+    {
+        return _stageIndex == FinalStageIndex && _roundIndex == FinalRoundIndex;
     }
 
     public void IncreasePopulationPrice(int amount)
