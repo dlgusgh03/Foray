@@ -1,14 +1,16 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BoardCellUI : MonoBehaviour
 {
-    private BoardPosition _boardPosition;
-    private BoardCell _boardCell;
-
     [SerializeField] private TMP_Text _pieceText;
     [SerializeField] private Color _playerPieceColor;
     [SerializeField] private Color _enemyPieceColor;
+    [SerializeField] private Button _button;
+
+    private BoardPosition _boardPosition;
+    private BoardCell _boardCell;
 
     public BoardPosition BoardPosition => _boardPosition;
 
@@ -16,6 +18,8 @@ public class BoardCellUI : MonoBehaviour
     {
         _boardPosition = boardPosition;
         _boardCell = boardCell;
+
+        _button.onClick.AddListener(OnClick);
 
         Piece piece = boardCell.Piece;
 
@@ -35,6 +39,11 @@ public class BoardCellUI : MonoBehaviour
         {
             _pieceText.color = _enemyPieceColor;
         }
+    }
+
+    private void OnClick()
+    {
+        Debug.Log($"Clicked cell: {_boardPosition}");
     }
 
     private string GetPieceText(PieceType pieceType)
