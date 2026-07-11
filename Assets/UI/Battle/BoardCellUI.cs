@@ -8,16 +8,24 @@ public class BoardCellUI : MonoBehaviour
     [SerializeField] private Color _playerPieceColor;
     [SerializeField] private Color _enemyPieceColor;
     [SerializeField] private Button _button;
+    [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Color _normalColor;
+    [SerializeField] private Color _selectedColor;
+    [SerializeField] private Color _movableColor;
 
     private BoardPosition _boardPosition;
     private BoardCell _boardCell;
+    private RunController _runController;
+    private BoardUI _boardUI;
 
     public BoardPosition BoardPosition => _boardPosition;
 
-    public void Initialize(BoardPosition boardPosition, BoardCell boardCell)
+    public void Initialize(BoardPosition boardPosition, BoardCell boardCell, RunController runController, BoardUI boardUI)
     {
         _boardPosition = boardPosition;
         _boardCell = boardCell;
+        _runController = runController;
+        _boardUI = boardUI;
 
         _button.onClick.AddListener(OnClick);
 
@@ -39,11 +47,6 @@ public class BoardCellUI : MonoBehaviour
         {
             _pieceText.color = _enemyPieceColor;
         }
-    }
-
-    private void OnClick()
-    {
-        Debug.Log($"Clicked cell: {_boardPosition}");
     }
 
     private string GetPieceText(PieceType pieceType)
@@ -68,5 +71,25 @@ public class BoardCellUI : MonoBehaviour
             default:
                 return "";
         }
+    }
+
+    private void OnClick()
+    {
+        bool isSelected = _runController.OnCellClicked(_boardPosition);
+
+        if (isSelected)
+        {
+            _boardUI.SelectCell(this);
+        }
+    }
+
+    public void SetSelected(bool isSelected)
+    {
+        _backgroundImage.color = isSelected ? _selectedColor : _normalColor;
+    }
+
+    public void SetMovable(bool isMovable)
+    {
+        _backgroundImage.color = isMovable ? _movableColor : _normalColor;
     }
 }
