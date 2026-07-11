@@ -29,7 +29,12 @@ public class BoardCellUI : MonoBehaviour
 
         _button.onClick.AddListener(OnClick);
 
-        Piece piece = boardCell.Piece;
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        Piece piece = _boardCell.Piece;
 
         if (piece == null)
         {

@@ -913,6 +913,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af3ab58c0118a644096fc28933cd5d26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunController
+  _boardUI: {fileID: 2111661756}
 --- !u!4 &1273508886
 Transform:
   m_ObjectHideFlags: 0

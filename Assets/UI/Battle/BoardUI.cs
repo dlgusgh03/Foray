@@ -77,4 +77,31 @@ public class BoardUI : MonoBehaviour
             }
         }
     }
+
+    public void RefreshBoard()
+    {
+        foreach (BoardCellUI cellUI in _cellUIs.Values)
+        {
+            cellUI.Refresh();
+        }
+    }
+
+    public void ClearSelection()
+    {
+        if (_selectedCellUI != null)
+        {
+            _selectedCellUI.SetSelected(false);
+            _selectedCellUI = null;
+        }
+
+        foreach (BoardCellUI highlightedCell in _highlightedCells)
+        {
+            if (highlightedCell != null)
+            {
+                highlightedCell.SetMovable(false);
+            }
+        }
+
+        _highlightedCells.Clear();
+    }
 }
