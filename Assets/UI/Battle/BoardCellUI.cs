@@ -7,6 +7,8 @@ public class BoardCellUI : MonoBehaviour
     private BoardCell _boardCell;
 
     [SerializeField] private TMP_Text _pieceText;
+    [SerializeField] private Color _playerPieceColor;
+    [SerializeField] private Color _enemyPieceColor;
 
     public BoardPosition BoardPosition => _boardPosition;
 
@@ -24,6 +26,15 @@ public class BoardCellUI : MonoBehaviour
         }
 
         _pieceText.text = GetPieceText(piece.Type);
+
+        if (piece.Owner == PieceOwner.Player)
+        {
+            _pieceText.color = _playerPieceColor;
+        }
+        else
+        {
+            _pieceText.color = _enemyPieceColor;
+        }
     }
 
     private string GetPieceText(PieceType pieceType)
