@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class RunController : MonoBehaviour
 {
     [SerializeField] private BoardUI _boardUI;
+    [SerializeField] private BattleResultUI _battleResultUI;
 
     private RunManager _runManager;
     private Piece _selectedPiece;
@@ -79,10 +80,13 @@ public class RunController : MonoBehaviour
             {
                 _boardUI.RefreshBoard();
 
+                CheckBattleEnd();
+
                 if (!battleManager.IsBattleOver())
                 {
                     battleManager.EnemyAct();
                     _boardUI.RefreshBoard();
+                    CheckBattleEnd();
                 }
             }
 
@@ -90,6 +94,7 @@ public class RunController : MonoBehaviour
         }
 
         // 이동 불가능한 빈 칸 또는 적 기물 클릭
+        ClearSelection();
         return false;
     }
 
@@ -107,5 +112,28 @@ public class RunController : MonoBehaviour
         _selectedPiece = null;
         _movablePositions.Clear();
         _boardUI.ClearSelection();
+    }
+
+    private void CheckBattleEnd()
+    {
+        BattleManager battleManager = _runManager.CurrentBattleManager;
+
+        if (!battleManager.IsBattleOver())
+        {
+            return;
+        }
+
+        PieceOwner? winner = battleManager.GetWinner();
+
+        if (winner == PieceOwner.Player)
+        {
+            _battleResultUI.ShowVictory();
+        }
+        else if (winner == PieceOwner.Enemy)
+        {
+            _battleResultUI.ShowDefeat();
+        }
+
+        Debug.Log($"Battle Over. Winner: {winner}");
     }
 }
