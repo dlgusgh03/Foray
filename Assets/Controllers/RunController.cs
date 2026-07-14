@@ -6,6 +6,7 @@ public class RunController : MonoBehaviour
     [SerializeField] private BoardUI _boardUI;
     [SerializeField] private BattleResultUI _battleResultUI;
     [SerializeField] private RunUIController _runUIController;
+    [SerializeField] private RunStatusUI _runStatusUI;
 
     private RunManager _runManager;
     private Piece _selectedPiece;
@@ -20,6 +21,7 @@ public class RunController : MonoBehaviour
         _runManager.StartRun();
 
         _runUIController.Refresh(_runManager.CurrentState);
+        _runStatusUI.Refresh(_runManager);
     }
 
     public bool OnCellClicked(BoardPosition position)
@@ -105,9 +107,17 @@ public class RunController : MonoBehaviour
     {
         _runManager.ResolveCurrentBattle();
         _battleResultUI.Hide();
-        _runUIController.Refresh(_runManager.CurrentState);
 
-        Debug.Log($"Continue clicked. " + $"State: {_runManager.CurrentState}, " + $"Stage: {_runManager.StageIndex}, " + $"Round: {_runManager.RoundIndex}, " + $"Gold: {_runManager.Gold}");
+        _runUIController.Refresh(_runManager.CurrentState);
+        _runStatusUI.Refresh(_runManager);
+
+        Debug.Log(
+         $"Continue clicked. " +
+         $"State: {_runManager.CurrentState}, " +
+         $"Stage: {_runManager.StageIndex}, " +
+         $"Round: {_runManager.RoundIndex}, " +
+         $"Gold: {_runManager.Gold}"
+         );
     }
 
     private void SelectPiece(Piece piece, BoardPosition position, Board board)
