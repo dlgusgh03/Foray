@@ -5,6 +5,7 @@ public class RunController : MonoBehaviour
 {
     [SerializeField] private BoardUI _boardUI;
     [SerializeField] private BattleResultUI _battleResultUI;
+    [SerializeField] private RunUIController _runUIController;
 
     private RunManager _runManager;
     private Piece _selectedPiece;
@@ -17,6 +18,8 @@ public class RunController : MonoBehaviour
     {
         _runManager = new RunManager();
         _runManager.StartRun();
+
+        _runUIController.Refresh(_runManager.CurrentState);
     }
 
     public bool OnCellClicked(BoardPosition position)
@@ -96,6 +99,15 @@ public class RunController : MonoBehaviour
         // 이동 불가능한 빈 칸 또는 적 기물 클릭
         ClearSelection();
         return false;
+    }
+
+    public void OnBattleResultContinue()
+    {
+        _runManager.ResolveCurrentBattle();
+        _battleResultUI.Hide();
+        _runUIController.Refresh(_runManager.CurrentState);
+
+        Debug.Log($"Continue clicked. " + $"State: {_runManager.CurrentState}, " + $"Stage: {_runManager.StageIndex}, " + $"Round: {_runManager.RoundIndex}, " + $"Gold: {_runManager.Gold}");
     }
 
     private void SelectPiece(Piece piece, BoardPosition position, Board board)
