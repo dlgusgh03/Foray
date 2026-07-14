@@ -120,6 +120,20 @@ public class RunController : MonoBehaviour
          );
     }
 
+    public void OnLeaveShop()
+    {
+        _runManager.LeaveShop();
+
+        if (_runManager.CurrentState != RunState.Battle)
+        {
+            return;
+        }
+
+        _boardUI.RebuildBoard(_runManager.CurrentBoard);
+        _runUIController.Refresh(_runManager.CurrentState);
+        _runStatusUI.Refresh(_runManager);
+    }
+
     private void SelectPiece(Piece piece, BoardPosition position, Board board)
     {
         _selectedPiece = piece;

@@ -17,6 +17,17 @@ public class BoardUI : MonoBehaviour
         CreateBoardUI(board);
     }
 
+    public void RebuildBoard(Board board)
+    {
+        if (board == null)
+        {
+            return;
+        }
+
+        ClearBoardUI();
+        CreateBoardUI(board);
+    }
+
     private void CreateBoardUI(Board board)
     {
         for (int y = board.Height - 1; y >= 0; y--)
@@ -33,6 +44,21 @@ public class BoardUI : MonoBehaviour
                 _cellUIs.Add(position, cellUI);
             }
         }
+    }
+
+    private void ClearBoardUI()
+    {
+        foreach (BoardCellUI cellUI in _cellUIs.Values)
+        {
+            if (cellUI != null)
+            {
+                Destroy(cellUI.gameObject);
+            }
+        }
+
+        _cellUIs.Clear();
+        _highlightedCells.Clear();
+        _selectedCellUI = null;
     }
 
     public void SelectCell(BoardCellUI cellUI)
