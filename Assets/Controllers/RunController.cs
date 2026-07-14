@@ -20,6 +20,24 @@ public class RunController : MonoBehaviour
 
     public bool OnCellClicked(BoardPosition position)
     {
+        BattleManager battleManager = _runManager.CurrentBattleManager;
+
+        if (battleManager == null)
+        {
+            return false;
+        }
+
+        if (battleManager.IsBattleOver())
+        {
+            return false;
+        }
+
+        if (battleManager.TurnManager.CurrentTurnOwner
+            != PieceOwner.Player)
+        {
+            return false;
+        }
+
         Board board = _runManager.CurrentBoard;
         Piece clickedPiece = board.GetPiece(position);
 
@@ -55,17 +73,23 @@ public class RunController : MonoBehaviour
         {
             bool acted = _runManager.CurrentBattleManager.PlayerAct(_selectedPosition, position);
 
+            ClearSelection();
+
             if (acted)
             {
                 _boardUI.RefreshBoard();
+
+                if (!battleManager.IsBattleOver())
+                {
+                    battleManager.EnemyAct();
+                    _boardUI.RefreshBoard();
+                }
             }
 
-            ClearSelection();
             return false;
         }
 
         // 이동 불가능한 빈 칸 또는 적 기물 클릭
-        ClearSelection();
         return false;
     }
 

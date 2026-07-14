@@ -5,10 +5,10 @@ using UnityEngine.UI;
 public class BoardCellUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text _pieceText;
-    [SerializeField] private Color _playerPieceColor;
-    [SerializeField] private Color _enemyPieceColor;
     [SerializeField] private Button _button;
     [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Color _playerPieceColor;
+    [SerializeField] private Color _enemyPieceColor;
     [SerializeField] private Color _normalColor;
     [SerializeField] private Color _selectedColor;
     [SerializeField] private Color _movableColor;
