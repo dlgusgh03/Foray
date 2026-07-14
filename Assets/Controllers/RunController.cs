@@ -7,6 +7,7 @@ public class RunController : MonoBehaviour
     [SerializeField] private BattleResultUI _battleResultUI;
     [SerializeField] private RunUIController _runUIController;
     [SerializeField] private RunStatusUI _runStatusUI;
+    [SerializeField] private AugmentSelectionUI _augmentSelectionUI;
 
     private RunManager _runManager;
     private Piece _selectedPiece;
@@ -111,6 +112,12 @@ public class RunController : MonoBehaviour
         _runUIController.Refresh(_runManager.CurrentState);
         _runStatusUI.Refresh(_runManager);
 
+        if (_runManager.CurrentState == RunState.AugmentSelection)
+        {
+            _augmentSelectionUI.Refresh();
+        }
+
+
         Debug.Log(
          $"Continue clicked. " +
          $"State: {_runManager.CurrentState}, " +
@@ -130,6 +137,14 @@ public class RunController : MonoBehaviour
         }
 
         _boardUI.RebuildBoard(_runManager.CurrentBoard);
+        _runUIController.Refresh(_runManager.CurrentState);
+        _runStatusUI.Refresh(_runManager);
+    }
+
+    public void OnAugmentSelected(int choiceIndex)
+    {
+        _runManager.SelectAugment(choiceIndex);
+
         _runUIController.Refresh(_runManager.CurrentState);
         _runStatusUI.Refresh(_runManager);
     }

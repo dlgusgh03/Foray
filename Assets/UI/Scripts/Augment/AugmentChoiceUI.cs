@@ -11,7 +11,7 @@ public class AugmentChoiceUI : MonoBehaviour
     [SerializeField] private Button _selectButton;
 
     private int _choiceIndex;
-    private System.Action<int> _onSelected;
+    private Action<int> _onSelected;
 
     public void Setup(Augment augment, int choiceIndex, Action<int> onSelected)
     {
