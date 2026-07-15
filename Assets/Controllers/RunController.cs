@@ -173,6 +173,16 @@ public class RunController : MonoBehaviour
         _ownedAugmentUI.Refresh(_runManager.GetCurrentAugments());
     }
 
+#if UNITY_EDITOR
+    public void DebugEnterAugmentReplacement()
+    {
+        _runManager.DebugEnterAugmentReplacement();
+
+        RefreshRunUI();
+        _augmentReplacementUI.Refresh();
+    }
+#endif
+
     private void SelectPiece(Piece piece, BoardPosition position, Board board)
     {
         _selectedPiece = piece;

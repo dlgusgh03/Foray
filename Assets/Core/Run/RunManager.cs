@@ -608,5 +608,33 @@ public class RunManager
     {
         HandleBattleWin();
     }
+
+    public void DebugEnterAugmentReplacement()
+    {
+        List<Augment> augments = AugmentCatalog.GetAllAugments();
+
+        if (augments.Count < MaxAugmentCount + 1)
+        {
+            Debug.LogError("Augment replacement debug requires at least 6 augments.");
+            return;
+        }
+
+        _currentAugments.Clear();
+
+        for (int i = 0; i < MaxAugmentCount; i++)
+        {
+            _currentAugments.Add(augments[i]);
+        }
+
+        _augmentChoices.Clear();
+        _pendingAugment = augments[MaxAugmentCount];
+        _currentState = RunState.AugmentReplacement;
+
+        Debug.Log(
+            $"Entered AugmentReplacement debug state. " +
+            $"Owned: {_currentAugments.Count}, " +
+            $"Pending: {_pendingAugment.Name}"
+        );
+    }
 #endif
 }

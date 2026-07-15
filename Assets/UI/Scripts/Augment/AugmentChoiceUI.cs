@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class AugmentChoiceUI : MonoBehaviour
 {
+    [SerializeField] private Image _iconImage;
+    [SerializeField] private Sprite _defaultIcon;
     [SerializeField] private TMP_Text _nameText;
     [SerializeField] private TMP_Text _rarityText;
     [SerializeField] private TMP_Text _descriptionText;
@@ -26,6 +28,7 @@ public class AugmentChoiceUI : MonoBehaviour
         _choiceIndex = choiceIndex;
         _onSelected = onSelected;
 
+        _iconImage.sprite = augment.Icon != null ? augment.Icon : _defaultIcon;
         _nameText.text = augment.Name;
         _rarityText.text = augment.Rarity.ToString();
         _descriptionText.text = augment.Description;
