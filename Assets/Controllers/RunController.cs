@@ -8,6 +8,7 @@ public class RunController : MonoBehaviour
     [SerializeField] private RunUIController _runUIController;
     [SerializeField] private RunStatusUI _runStatusUI;
     [SerializeField] private AugmentSelectionUI _augmentSelectionUI;
+    [SerializeField] private AugmentReplacementUI _augmentReplacementUI;
 
     private RunManager _runManager;
     private Piece _selectedPiece;
@@ -144,6 +145,27 @@ public class RunController : MonoBehaviour
     public void OnAugmentSelected(int choiceIndex)
     {
         _runManager.SelectAugment(choiceIndex);
+
+        _runUIController.Refresh(_runManager.CurrentState);
+        _runStatusUI.Refresh(_runManager);
+
+        if (_runManager.CurrentState == RunState.AugmentReplacement)
+        {
+            _augmentReplacementUI.Refresh();
+        }
+    }
+
+    public void OnAugmentReplaced(int ownedAugmentIndex)
+    {
+        _runManager.ReplaceAugment(ownedAugmentIndex);
+
+        _runUIController.Refresh(_runManager.CurrentState);
+        _runStatusUI.Refresh(_runManager);
+    }
+
+    public void OnAugmentReplacementSkipped()
+    {
+        _runManager.SkipAugment();
 
         _runUIController.Refresh(_runManager.CurrentState);
         _runStatusUI.Refresh(_runManager);

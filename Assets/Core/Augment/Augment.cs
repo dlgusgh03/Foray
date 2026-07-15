@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class Augment
 {
     private readonly int _id;
@@ -5,12 +7,14 @@ public class Augment
     private readonly string _description;
     private readonly AugmentRarity _rarity;
     private readonly AugmentEffect _effect;
+    private readonly Sprite _icon;
 
     public int ID => _id;
     public string Name => _name;
     public string Description => _description;
     public AugmentRarity Rarity => _rarity;
     public AugmentEffect Effect => _effect;
+    public Sprite Icon => _icon;
 
     public Augment()
     {
@@ -21,13 +25,14 @@ public class Augment
         _effect = null;
     }
 
-    public Augment(int id, string name, string description, AugmentRarity rarity, AugmentEffect effect)
+    public Augment(int id, string name, string description, AugmentRarity rarity, AugmentEffect effect, Sprite icon = null)
     {
         _id = id;
         _name = name;
         _description = description;
         _rarity = rarity;
         _effect = effect;
+        _icon = icon;
     }
 
     public override bool Equals(object obj)
