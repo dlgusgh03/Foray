@@ -7,6 +7,7 @@ public class RunController : MonoBehaviour
     [SerializeField] private BattleResultUI _battleResultUI;
     [SerializeField] private RunUIController _runUIController;
     [SerializeField] private RunStatusUI _runStatusUI;
+    [SerializeField] private OwnedAugmentUI _ownedAugmentUI;
     [SerializeField] private AugmentSelectionUI _augmentSelectionUI;
     [SerializeField] private AugmentReplacementUI _augmentReplacementUI;
 
@@ -145,9 +146,7 @@ public class RunController : MonoBehaviour
     public void OnAugmentSelected(int choiceIndex)
     {
         _runManager.SelectAugment(choiceIndex);
-
-        _runUIController.Refresh(_runManager.CurrentState);
-        _runStatusUI.Refresh(_runManager);
+        RefreshRunUI();
 
         if (_runManager.CurrentState == RunState.AugmentReplacement)
         {
@@ -158,17 +157,20 @@ public class RunController : MonoBehaviour
     public void OnAugmentReplaced(int ownedAugmentIndex)
     {
         _runManager.ReplaceAugment(ownedAugmentIndex);
-
-        _runUIController.Refresh(_runManager.CurrentState);
-        _runStatusUI.Refresh(_runManager);
+        RefreshRunUI();
     }
 
     public void OnAugmentReplacementSkipped()
     {
         _runManager.SkipAugment();
+        RefreshRunUI();
+    }
 
+    private void RefreshRunUI()
+    {
         _runUIController.Refresh(_runManager.CurrentState);
         _runStatusUI.Refresh(_runManager);
+        _ownedAugmentUI.Refresh(_runManager.GetCurrentAugments());
     }
 
     private void SelectPiece(Piece piece, BoardPosition position, Board board)
