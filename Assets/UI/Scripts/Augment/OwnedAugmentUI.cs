@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class OwnedAugmentUI : MonoBehaviour
@@ -7,14 +6,15 @@ public class OwnedAugmentUI : MonoBehaviour
     [SerializeField] private OwnedAugmentSlotUI[] _slots;
     [SerializeField] private AugmentTooltipUI _tooltip;
 
-    private bool _isTooltipPinned;
-    private Augment _pinnedAugment;
+    private int _selectedSlotIndex = -1;
+    private int _hoveredSlotIndex = -1;
+    private bool _isReplacementMode;
 
     private void Awake()
     {
-        foreach (OwnedAugmentSlotUI slot in _slots)
+        for (int i = 0; i < _slots.Length; i++)
         {
-            slot.Initialize(this);
+            _slots[i].Initialize(this, i);
         }
 
         _tooltip.Hide();
@@ -22,57 +22,87 @@ public class OwnedAugmentUI : MonoBehaviour
 
     public void Refresh(IReadOnlyList<Augment> ownedAugments)
     {
+        ClearSelection();
+
         for (int i = 0; i < _slots.Length; i++)
         {
-            Augment augment = i < ownedAugments.Count ? ownedAugments[i] : null;
+            bool hasAugment = i < ownedAugments.Count;
 
-            _slots[i].Refresh(augment);
-        }
+            _slots[i].gameObject.SetActive(hasAugment);
 
-        if (_pinnedAugment != null && !ownedAugments.Contains(_pinnedAugment))
-        {
-            CloseTooltip();
+            if (!hasAugment)
+            {
+                continue;
+            }
+
+            _slots[i].Refresh(ownedAugments[i]);
         }
     }
 
-    public void ShowTooltip(Augment augment, Vector3 slotPosition)
+    public void ClearSelection()
     {
-        if (_isTooltipPinned)
+        if (_selectedSlotIndex >= 0)
         {
-            return;
+            _slots[_selectedSlotIndex].SetSelected(false);
         }
 
-        _tooltip.transform.position = slotPosition;
-        _tooltip.Show(augment);
+        _selectedSlotIndex = -1;
+        _hoveredSlotIndex = -1;
+        _tooltip.Hide();
     }
 
-    public void HideTooltipUnlessPinned()
+    public void OnSlotHovered(int index)
     {
-        if (!_isTooltipPinned)
+        _hoveredSlotIndex = index;
+
+        RefreshTooltip();
+    }
+
+    public void OnSlotHoverExited(int index)
+    {
+        if (_hoveredSlotIndex == index)
+        {
+            _hoveredSlotIndex = -1;
+        }
+
+        RefreshTooltip();
+    }
+
+    public void OnSlotClicked(int index)
+    {
+        if (_selectedSlotIndex == index)
+        {
+            _slots[_selectedSlotIndex].SetSelected(false);
+            _selectedSlotIndex = -1;
+        }
+        else
+        {
+            if(_selectedSlotIndex  != -1)
+            {
+                _slots[_selectedSlotIndex].SetSelected(false);
+                
+            }
+            _slots[index].SetSelected(true);
+            _selectedSlotIndex = index;
+        }
+
+        RefreshTooltip();
+    }
+
+    private void RefreshTooltip()
+    {
+        int displayIndex = _hoveredSlotIndex >= 0 ? _hoveredSlotIndex : _selectedSlotIndex;
+
+        if (displayIndex < 0)
         {
             _tooltip.Hide();
-        }
-    }
-
-    public void TogglePinnedTooltip(Augment augment, Vector3 slotPosition)
-    {
-        if (_isTooltipPinned && _pinnedAugment == augment)
-        {
-            CloseTooltip();
             return;
         }
 
-        _isTooltipPinned = true;
-        _pinnedAugment = augment;
+        OwnedAugmentSlotUI slot = _slots[displayIndex];
+        Augment augment = slot.Augment;
 
-        _tooltip.transform.position = slotPosition;
+        _tooltip.transform.position = slot.TooltipPosition;
         _tooltip.Show(augment);
-    }
-
-    public void CloseTooltip()
-    {
-        _isTooltipPinned = false;
-        _pinnedAugment = null;
-        _tooltip.Hide();
     }
 }

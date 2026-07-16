@@ -25,6 +25,7 @@ public class RunController : MonoBehaviour
 
         _runUIController.Refresh(_runManager.CurrentState);
         _runStatusUI.Refresh(_runManager);
+        _ownedAugmentUI.Refresh(_runManager.GetCurrentAugments());
     }
 
     public bool OnCellClicked(BoardPosition position)
