@@ -1,37 +1,117 @@
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class AugmentReplacementUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Text _pendingNameText;
-    [SerializeField] private TMP_Text _pendingRarityText;
-    [SerializeField] private TMP_Text _pendingDescriptionText;
+    private const int PendingAugmentIndex = 5;
 
-    [SerializeField] private Button _skipButton;
+    [SerializeField] private PendingAugmentUI _pendingAugmentUI;
+    [SerializeField] private AugmentTooltipUI _tooltip;
+    [SerializeField] private Button _confirmButton;
     [SerializeField] private RunController _runController;
+
+    private int _selectedIndex = -1;
+    private bool _isPendingHovered;
+
+    private void Awake()
+    {
+        _pendingAugmentUI.Initialize(this);
+
+        _confirmButton.interactable = false;
+        _confirmButton.onClick.AddListener(OnConfirmButtonClicked);
+    }
+
+    private void OnDestroy()
+    {
+        _confirmButton.onClick.RemoveListener(OnConfirmButtonClicked);
+    }
 
     public void Refresh()
     {
         RunManager runManager = _runController.RunManager;
         Augment pendingAugment = runManager.PendingAugment;
 
-        if (pendingAugment == null)
+        _selectedIndex = -1;
+        _isPendingHovered = false;
+
+        _pendingAugmentUI.Refresh(pendingAugment);
+
+        _confirmButton.interactable = false;
+        _tooltip.Hide();
+    }
+
+    public void OnPendingAugmentHovered()
+    {
+        _isPendingHovered = true;
+        ShowPendingAugmentTooltip();
+    }
+
+    public void OnPendingAugmentHoverExited()
+    {
+        _isPendingHovered = false;
+
+        if (_selectedIndex == PendingAugmentIndex)
+        {
+            ShowPendingAugmentTooltip();
+            return;
+        }
+
+        _tooltip.Hide();
+    }
+
+    public void OnPendingAugmentClicked()
+    {
+        if (_selectedIndex == PendingAugmentIndex)
+        {
+            _selectedIndex = -1;
+
+            _pendingAugmentUI.SetSelected(false);
+            _confirmButton.interactable = false;
+
+            if (!_isPendingHovered)
+            {
+                _tooltip.Hide();
+            }
+
+            return;
+        }
+
+        _selectedIndex = PendingAugmentIndex;
+
+        _pendingAugmentUI.SetSelected(true);
+        _confirmButton.interactable = true;
+
+        ShowPendingAugmentTooltip();
+    }
+
+    private void ShowPendingAugmentTooltip()
+    {
+        Augment augment = _pendingAugmentUI.Augment;
+
+        if (augment == null)
+        {
+            _tooltip.Hide();
+            return;
+        }
+
+        _tooltip.transform.position = _pendingAugmentUI.TooltipPosition;
+        _tooltip.Show(augment);
+    }
+
+    private void OnConfirmButtonClicked()
+    {
+        if (_selectedIndex != PendingAugmentIndex)
         {
             return;
         }
 
-        _pendingNameText.text = pendingAugment.Name;
-        _pendingRarityText.text = pendingAugment.Rarity.ToString();
-        _pendingDescriptionText.text = pendingAugment.Description;
+        _selectedIndex = -1;
+        _isPendingHovered = false;
 
-        _skipButton.onClick.RemoveAllListeners();
-        _skipButton.onClick.AddListener(OnSkipButtonClicked);
-    }
+        _pendingAugmentUI.SetSelected(false);
+        _confirmButton.interactable = false;
+        _tooltip.Hide();
 
-    private void OnSkipButtonClicked()
-    {
         _runController.OnAugmentReplacementSkipped();
     }
 }
