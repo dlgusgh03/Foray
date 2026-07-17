@@ -9,9 +9,10 @@ public class AugmentReplacementUI : MonoBehaviour
     [SerializeField] private AugmentTooltipUI _tooltip;
     [SerializeField] private Button _confirmButton;
     [SerializeField] private RunController _runController;
+    [SerializeField] private OwnedAugmentUI _ownedAugmentUI;
 
     private int _selectedIndex = -1;
-    private bool _isPendingHovered;
+    private int _hoveredIndex = -1;
 
     private void Awake()
     {
@@ -29,64 +30,140 @@ public class AugmentReplacementUI : MonoBehaviour
     public void Refresh()
     {
         RunManager runManager = _runController.RunManager;
-        Augment pendingAugment = runManager.PendingAugment;
 
-        _selectedIndex = -1;
-        _isPendingHovered = false;
+        ClearSelectionState();
 
-        _pendingAugmentUI.Refresh(pendingAugment);
+        _pendingAugmentUI.Refresh(runManager.PendingAugment);
+        _ownedAugmentUI.EnterReplacementMode(this);
+    }
 
-        _confirmButton.interactable = false;
-        _tooltip.Hide();
+    public void OnOwnedAugmentHovered(int index)
+    {
+        if (!IsOwnedAugmentIndex(index))
+        {
+            return;
+        }
+
+        _hoveredIndex = index;
+        RefreshTooltip();
+    }
+
+    public void OnOwnedAugmentHoverExited(int index)
+    {
+        if (!IsOwnedAugmentIndex(index))
+        {
+            return;
+        }
+
+        if (_hoveredIndex == index)
+        {
+            _hoveredIndex = -1;
+        }
+
+        RefreshTooltip();
+    }
+
+    public void OnOwnedAugmentClicked(int index)
+    {
+        if (!IsOwnedAugmentIndex(index))
+        {
+            return;
+        }
+
+        ToggleSelection(index);
     }
 
     public void OnPendingAugmentHovered()
     {
-        _isPendingHovered = true;
-        ShowPendingAugmentTooltip();
+        _hoveredIndex = PendingAugmentIndex;
+        RefreshTooltip();
     }
 
     public void OnPendingAugmentHoverExited()
     {
-        _isPendingHovered = false;
-
-        if (_selectedIndex == PendingAugmentIndex)
+        if (_hoveredIndex == PendingAugmentIndex)
         {
-            ShowPendingAugmentTooltip();
-            return;
+            _hoveredIndex = -1;
         }
 
-        _tooltip.Hide();
+        RefreshTooltip();
     }
 
     public void OnPendingAugmentClicked()
     {
-        if (_selectedIndex == PendingAugmentIndex)
+        ToggleSelection(PendingAugmentIndex);
+    }
+
+    private void ToggleSelection(int index)
+    {
+        if (!IsValidCardIndex(index))
         {
-            _selectedIndex = -1;
-
-            _pendingAugmentUI.SetSelected(false);
-            _confirmButton.interactable = false;
-
-            if (!_isPendingHovered)
-            {
-                _tooltip.Hide();
-            }
-
             return;
         }
 
-        _selectedIndex = PendingAugmentIndex;
+        if (_selectedIndex == index)
+        {
+            SetCardSelected(_selectedIndex, false);
 
-        _pendingAugmentUI.SetSelected(true);
+            _selectedIndex = -1;
+            _confirmButton.interactable = false;
+
+            RefreshTooltip();
+            return;
+        }
+
+        if (_selectedIndex >= 0)
+        {
+            SetCardSelected(_selectedIndex, false);
+        }
+
+        _selectedIndex = index;
+
+        SetCardSelected(_selectedIndex, true);
         _confirmButton.interactable = true;
 
-        ShowPendingAugmentTooltip();
+        RefreshTooltip();
     }
 
-    private void ShowPendingAugmentTooltip()
+    private void SetCardSelected(int index, bool selected)
     {
-        Augment augment = _pendingAugmentUI.Augment;
+        if (IsOwnedAugmentIndex(index))
+        {
+            _ownedAugmentUI.SetSlotSelected(index, selected);
+            return;
+        }
+
+        if (index == PendingAugmentIndex)
+        {
+            _pendingAugmentUI.SetSelected(selected);
+        }
+    }
+
+    private void RefreshTooltip()
+    {
+        int displayIndex = _hoveredIndex >= 0
+            ? _hoveredIndex
+            : _selectedIndex;
+
+        if (!IsValidCardIndex(displayIndex))
+        {
+            _tooltip.Hide();
+            return;
+        }
+
+        Augment augment;
+        Vector3 tooltipPosition;
+
+        if (displayIndex == PendingAugmentIndex)
+        {
+            augment = _pendingAugmentUI.Augment;
+            tooltipPosition = _pendingAugmentUI.TooltipPosition;
+        }
+        else
+        {
+            augment = _ownedAugmentUI.GetAugment(displayIndex);
+            tooltipPosition = _ownedAugmentUI.GetTooltipPosition(displayIndex);
+        }
 
         if (augment == null)
         {
@@ -94,24 +171,52 @@ public class AugmentReplacementUI : MonoBehaviour
             return;
         }
 
-        _tooltip.transform.position = _pendingAugmentUI.TooltipPosition;
+        _tooltip.transform.position = tooltipPosition;
         _tooltip.Show(augment);
     }
 
     private void OnConfirmButtonClicked()
     {
-        if (_selectedIndex != PendingAugmentIndex)
+        if (!IsValidCardIndex(_selectedIndex))
         {
             return;
         }
 
-        _selectedIndex = -1;
-        _isPendingHovered = false;
+        int confirmedIndex = _selectedIndex;
 
-        _pendingAugmentUI.SetSelected(false);
-        _confirmButton.interactable = false;
-        _tooltip.Hide();
+        ClearSelectionState();
+        _ownedAugmentUI.ExitReplacementMode();
+
+        if (IsOwnedAugmentIndex(confirmedIndex))
+        {
+            _runController.OnAugmentReplaced(confirmedIndex);
+            return;
+        }
 
         _runController.OnAugmentReplacementSkipped();
+    }
+
+    private void ClearSelectionState()
+    {
+        if (_selectedIndex >= 0)
+        {
+            SetCardSelected(_selectedIndex, false);
+        }
+
+        _selectedIndex = -1;
+        _hoveredIndex = -1;
+
+        _confirmButton.interactable = false;
+        _tooltip.Hide();
+    }
+
+    private static bool IsOwnedAugmentIndex(int index)
+    {
+        return index >= 0 && index < PendingAugmentIndex;
+    }
+
+    private static bool IsValidCardIndex(int index)
+    {
+        return index >= 0 && index <= PendingAugmentIndex;
     }
 }

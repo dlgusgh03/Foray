@@ -9,6 +9,7 @@ public class OwnedAugmentUI : MonoBehaviour
     private int _selectedSlotIndex = -1;
     private int _hoveredSlotIndex = -1;
     private bool _isReplacementMode;
+    private AugmentReplacementUI _replacementUI;
 
     private void Awake()
     {
@@ -55,6 +56,12 @@ public class OwnedAugmentUI : MonoBehaviour
     {
         _hoveredSlotIndex = index;
 
+        if (_isReplacementMode)
+        {
+            _replacementUI?.OnOwnedAugmentHovered(index);
+            return;
+        }
+
         RefreshTooltip();
     }
 
@@ -65,11 +72,23 @@ public class OwnedAugmentUI : MonoBehaviour
             _hoveredSlotIndex = -1;
         }
 
+        if (_isReplacementMode)
+        {
+            _replacementUI?.OnOwnedAugmentHoverExited(index);
+            return;
+        }
+
         RefreshTooltip();
     }
 
     public void OnSlotClicked(int index)
     {
+        if (_isReplacementMode)
+        {
+            _replacementUI?.OnOwnedAugmentClicked(index);
+            return;
+        }
+
         if (_selectedSlotIndex == index)
         {
             _slots[_selectedSlotIndex].SetSelected(false);
@@ -77,11 +96,11 @@ public class OwnedAugmentUI : MonoBehaviour
         }
         else
         {
-            if(_selectedSlotIndex  != -1)
+            if (_selectedSlotIndex >= 0)
             {
                 _slots[_selectedSlotIndex].SetSelected(false);
-                
             }
+
             _slots[index].SetSelected(true);
             _selectedSlotIndex = index;
         }
@@ -89,9 +108,57 @@ public class OwnedAugmentUI : MonoBehaviour
         RefreshTooltip();
     }
 
+    public void EnterReplacementMode(AugmentReplacementUI replacementUI)
+    {
+        ClearSelection();
+
+        _isReplacementMode = true;
+        _replacementUI = replacementUI;
+    }
+
+    public void ExitReplacementMode()
+    {
+        _isReplacementMode = false;
+        _replacementUI = null;
+
+        ClearSelection();
+    }
+
+    public void SetSlotSelected(int index, bool selected)
+    {
+        if (index < 0 || index >= _slots.Length)
+        {
+            return;
+        }
+
+        _slots[index].SetSelected(selected);
+    }
+
+    public Augment GetAugment(int index)
+    {
+        if (index < 0 || index >= _slots.Length)
+        {
+            return null;
+        }
+
+        return _slots[index].Augment;
+    }
+
+    public Vector3 GetTooltipPosition(int index)
+    {
+        if (index < 0 || index >= _slots.Length)
+        {
+            return Vector3.zero;
+        }
+
+        return _slots[index].TooltipPosition;
+    }
+
     private void RefreshTooltip()
     {
-        int displayIndex = _hoveredSlotIndex >= 0 ? _hoveredSlotIndex : _selectedSlotIndex;
+        int displayIndex = _hoveredSlotIndex >= 0
+            ? _hoveredSlotIndex
+            : _selectedSlotIndex;
 
         if (displayIndex < 0)
         {

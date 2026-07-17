@@ -2594,6 +2594,7 @@ MonoBehaviour:
   _tooltip: {fileID: 251409628}
   _confirmButton: {fileID: 1995477589}
   _runController: {fileID: 1273508885}
+  _ownedAugmentUI: {fileID: 1551850917}
 --- !u!1 &1045438921
 GameObject:
   m_ObjectHideFlags: 0
