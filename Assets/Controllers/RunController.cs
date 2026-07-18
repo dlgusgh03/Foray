@@ -30,6 +30,11 @@ public class RunController : MonoBehaviour
 
     public bool OnCellClicked(BoardPosition position)
     {
+        if (_runManager == null || _runManager.CurrentState != RunState.Battle)
+        {
+            return false;
+        }
+
         BattleManager battleManager = _runManager.CurrentBattleManager;
 
         if (battleManager == null)
@@ -109,6 +114,9 @@ public class RunController : MonoBehaviour
 
     public void OnBattleResultContinue()
     {
+        ClearSelection();
+        _ownedAugmentUI.ClearSelection();
+
         _runManager.ResolveCurrentBattle();
         _battleResultUI.Hide();
 
@@ -119,7 +127,6 @@ public class RunController : MonoBehaviour
         {
             _augmentSelectionUI.Refresh();
         }
-
 
         Debug.Log(
          $"Continue clicked. " +

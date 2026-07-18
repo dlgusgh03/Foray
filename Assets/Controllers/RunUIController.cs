@@ -9,9 +9,18 @@ public class RunUIController : MonoBehaviour
 
     public void Refresh(RunState state)
     {
-        _battleUIRoot.SetActive(state == RunState.Battle);
+        bool showBaseRunUI =
+            state == RunState.Battle ||
+            state == RunState.Shop ||
+            state == RunState.AugmentSelection ||
+            state == RunState.AugmentReplacement;
+
+        _battleUIRoot.SetActive(showBaseRunUI);
+
         _shopUIRoot.SetActive(state == RunState.Shop);
+
         _augmentSelectionUIRoot.SetActive(state == RunState.AugmentSelection);
+
         _augmentReplacementUIRoot.SetActive(state == RunState.AugmentReplacement);
     }
 }

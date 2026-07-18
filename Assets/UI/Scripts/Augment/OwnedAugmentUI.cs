@@ -3,8 +3,12 @@ using UnityEngine;
 
 public class OwnedAugmentUI : MonoBehaviour
 {
+    private const int NormalSortingOrder = 0;
+    private const int ReplacementSortingOrder = 20;
+
     [SerializeField] private OwnedAugmentSlotUI[] _slots;
     [SerializeField] private AugmentTooltipUI _tooltip;
+    [SerializeField] private Canvas _sortingCanvas;
 
     private int _selectedSlotIndex = -1;
     private int _hoveredSlotIndex = -1;
@@ -13,6 +17,9 @@ public class OwnedAugmentUI : MonoBehaviour
 
     private void Awake()
     {
+        _sortingCanvas.overrideSorting = true;
+        _sortingCanvas.sortingOrder = NormalSortingOrder;
+        
         for (int i = 0; i < _slots.Length; i++)
         {
             _slots[i].Initialize(this, i);
@@ -114,12 +121,14 @@ public class OwnedAugmentUI : MonoBehaviour
 
         _isReplacementMode = true;
         _replacementUI = replacementUI;
+        _sortingCanvas.sortingOrder = ReplacementSortingOrder;
     }
 
     public void ExitReplacementMode()
     {
         _isReplacementMode = false;
         _replacementUI = null;
+        _sortingCanvas.sortingOrder = NormalSortingOrder;
 
         ClearSelection();
     }
