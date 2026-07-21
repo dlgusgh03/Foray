@@ -24,13 +24,15 @@ public class EnemyAIDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(2, 4)
+            new BoardPosition(2, 4),
+            0
         );
 
         Piece enemyChariot = new Piece(
             PieceType.Chariot,
             PieceOwner.Enemy,
-            new BoardPosition(2, 0)
+            new BoardPosition(2, 0),
+            null
         );
 
         board.PlacePiece(playerKing, playerKing.Position);
@@ -59,19 +61,22 @@ public class EnemyAIDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(4, 4)
+            new BoardPosition(4, 4),
+            0
         );
 
         Piece playerSoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            0
         );
 
         Piece enemySoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            null
         );
 
         board.PlacePiece(playerKing, playerKing.Position);
@@ -101,13 +106,15 @@ public class EnemyAIDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(4, 4)
+            new BoardPosition(4, 4),
+            0
         );
 
         Piece enemySoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(1, 1)
+            new BoardPosition(1, 1),
+            null
         );
 
         board.PlacePiece(playerKing, playerKing.Position);
@@ -139,7 +146,8 @@ public class EnemyAIDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(playerKing, playerKing.Position);
@@ -163,13 +171,15 @@ public class EnemyAIDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(4, 4)
+            new BoardPosition(4, 4),
+            0
         );
 
         Piece enemySoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(1, 1)
+            new BoardPosition(1, 1),
+            null
         );
 
         board.PlacePiece(playerKing, playerKing.Position);
@@ -182,7 +192,8 @@ public class EnemyAIDebugRunner : MonoBehaviour
         Piece playerSoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(0, 0)
+            new BoardPosition(0, 0),
+            0
         );
 
         board.PlacePiece(playerSoldier, playerSoldier.Position);

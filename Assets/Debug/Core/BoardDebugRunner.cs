@@ -18,7 +18,7 @@ public class BoardDebugRunner : MonoBehaviour
         BoardPosition start = new BoardPosition(4, 0);
         BoardPosition target = new BoardPosition(4, 1);
 
-        Piece king = new Piece(PieceType.King, PieceOwner.Player, start);
+        Piece king = new Piece(PieceType.King, PieceOwner.Player, start, 0);
 
         board.PlacePiece(king, start);
 
@@ -39,8 +39,8 @@ public class BoardDebugRunner : MonoBehaviour
         BoardPosition attackerPosition = new BoardPosition(4, 0);
         BoardPosition targetPosition = new BoardPosition(4, 1);
 
-        Piece playerKing = new Piece(PieceType.King, PieceOwner.Player, attackerPosition);
-        Piece enemySoldier = new Piece(PieceType.Soldier, PieceOwner.Enemy, targetPosition);
+        Piece playerKing = new Piece(PieceType.King, PieceOwner.Player, attackerPosition, 0);
+        Piece enemySoldier = new Piece(PieceType.Soldier, PieceOwner.Enemy, targetPosition, null);
 
         board.PlacePiece(playerKing, attackerPosition);
         board.PlacePiece(enemySoldier, targetPosition);
@@ -63,8 +63,8 @@ public class BoardDebugRunner : MonoBehaviour
         BoardPosition attackerPosition = new BoardPosition(4, 0);
         BoardPosition targetPosition = new BoardPosition(4, 1);
 
-        Piece playerKing = new Piece(PieceType.King, PieceOwner.Player, attackerPosition);
-        Piece playerSoldier = new Piece(PieceType.Soldier, PieceOwner.Player, targetPosition);
+        Piece playerKing = new Piece(PieceType.King, PieceOwner.Player, attackerPosition, 0);
+        Piece playerSoldier = new Piece(PieceType.Soldier, PieceOwner.Player, targetPosition, 0);
 
         board.PlacePiece(playerKing, attackerPosition);
         board.PlacePiece(playerSoldier, targetPosition);

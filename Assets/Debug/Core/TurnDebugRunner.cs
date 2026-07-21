@@ -24,7 +24,8 @@ public class TurnDebugRunner : MonoBehaviour
         Piece playerSoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(playerSoldier, playerSoldier.Position);
@@ -54,7 +55,8 @@ public class TurnDebugRunner : MonoBehaviour
         Piece enemySoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            null
         );
 
         board.PlacePiece(enemySoldier, enemySoldier.Position);
@@ -84,7 +86,8 @@ public class TurnDebugRunner : MonoBehaviour
         Piece playerSoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(playerSoldier, playerSoldier.Position);
@@ -115,13 +118,15 @@ public class TurnDebugRunner : MonoBehaviour
         Piece playerSoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemySoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(playerSoldier, playerSoldier.Position);
@@ -156,13 +161,15 @@ public class TurnDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemyKing = new Piece(
             PieceType.King,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(playerKing, playerKing.Position);

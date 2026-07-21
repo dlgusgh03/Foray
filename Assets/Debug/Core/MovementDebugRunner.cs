@@ -77,7 +77,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece king = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(king, king.Position);
@@ -97,7 +98,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece king = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(0, 0)
+            new BoardPosition(0, 0),
+            0
         );
 
         board.PlacePiece(king, king.Position);
@@ -117,13 +119,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece king = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece allySoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            0
         );
 
         board.PlacePiece(king, king.Position);
@@ -144,13 +148,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece king = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemySoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(king, king.Position);
@@ -171,7 +177,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece king = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(king, king.Position);
@@ -205,7 +212,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece soldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(soldier, soldier.Position);
@@ -225,7 +233,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece soldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            null
         );
 
         board.PlacePiece(soldier, soldier.Position);
@@ -245,7 +254,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece soldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(0, 0)
+            new BoardPosition(0, 0),
+            0
         );
 
         board.PlacePiece(soldier, soldier.Position);
@@ -265,13 +275,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece soldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece ally = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            0
         );
 
         board.PlacePiece(soldier, soldier.Position);
@@ -292,13 +304,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece soldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemy = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(soldier, soldier.Position);
@@ -319,7 +333,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece soldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(soldier, soldier.Position);
@@ -342,7 +357,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece chariot = new Piece(
             PieceType.Chariot,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(chariot, chariot.Position);
@@ -365,7 +381,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece chariot = new Piece(
             PieceType.Chariot,
             PieceOwner.Player,
-            new BoardPosition(0, 0)
+            new BoardPosition(0, 0),
+            0
         );
 
         board.PlacePiece(chariot, chariot.Position);
@@ -388,13 +405,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece chariot = new Piece(
             PieceType.Chariot,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece ally = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            0
         );
 
         board.PlacePiece(chariot, chariot.Position);
@@ -418,13 +437,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece chariot = new Piece(
             PieceType.Chariot,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemy = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(chariot, chariot.Position);
@@ -448,7 +469,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece chariot = new Piece(
             PieceType.Chariot,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(chariot, chariot.Position);
@@ -474,7 +496,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece horse = new Piece(
             PieceType.Horse,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(horse, horse.Position);
@@ -497,7 +520,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece horse = new Piece(
             PieceType.Horse,
             PieceOwner.Player,
-            new BoardPosition(0, 0)
+            new BoardPosition(0, 0),
+            0
         );
 
         board.PlacePiece(horse, horse.Position);
@@ -520,13 +544,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece horse = new Piece(
             PieceType.Horse,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece ally = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            0
         );
 
         board.PlacePiece(horse, horse.Position);
@@ -550,13 +576,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece horse = new Piece(
             PieceType.Horse,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemy = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(horse, horse.Position);
@@ -580,7 +608,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece horse = new Piece(
             PieceType.Horse,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(horse, horse.Position);
@@ -606,13 +635,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece horse = new Piece(
             PieceType.Horse,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemy = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(1, 4)
+            new BoardPosition(1, 4),
+            null
         );
 
         board.PlacePiece(horse, horse.Position);
@@ -636,13 +667,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece horse = new Piece(
             PieceType.Horse,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece ally = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(1, 4)
+            new BoardPosition(1, 4),
+            0
         );
 
         board.PlacePiece(horse, horse.Position);
@@ -666,7 +699,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece cannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(cannon, cannon.Position);
@@ -689,13 +723,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece cannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 0)
+            new BoardPosition(2, 0),
+            0
         );
 
         Piece screen = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 1)
+            new BoardPosition(2, 1),
+            0
         );
 
         board.PlacePiece(cannon, cannon.Position);
@@ -719,13 +755,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece cannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 0)
+            new BoardPosition(2, 0),
+            0
         );
 
         Piece screenCannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 1)
+            new BoardPosition(2, 1),
+            0
         );
 
         board.PlacePiece(cannon, cannon.Position);
@@ -749,19 +787,22 @@ public class MovementDebugRunner : MonoBehaviour
         Piece cannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 0)
+            new BoardPosition(2, 0),
+            0
         );
 
         Piece screen = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 1)
+            new BoardPosition(2, 1),
+            0
         );
 
         Piece enemy = new Piece(
             PieceType.Horse,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(cannon, cannon.Position);
@@ -786,19 +827,22 @@ public class MovementDebugRunner : MonoBehaviour
         Piece cannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 0)
+            new BoardPosition(2, 0),
+            0
         );
 
         Piece screen = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 1)
+            new BoardPosition(2, 1),
+            0
         );
 
         Piece ally = new Piece(
             PieceType.Horse,
             PieceOwner.Player,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            0
         );
 
         board.PlacePiece(cannon, cannon.Position);
@@ -823,19 +867,22 @@ public class MovementDebugRunner : MonoBehaviour
         Piece cannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 0)
+            new BoardPosition(2, 0),
+            0
         );
 
         Piece screen = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 1)
+            new BoardPosition(2, 1),
+            0
         );
 
         Piece enemyCannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(cannon, cannon.Position);
@@ -860,19 +907,22 @@ public class MovementDebugRunner : MonoBehaviour
         Piece cannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 0)
+            new BoardPosition(2, 0),
+            0
         );
 
         Piece screen = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 1)
+            new BoardPosition(2, 1),
+            0
         );
 
         Piece enemy = new Piece(
             PieceType.Horse,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(cannon, cannon.Position);
@@ -897,7 +947,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece cannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 0)
+            new BoardPosition(2, 0),
+            0
         );
 
         board.PlacePiece(cannon, cannon.Position);
@@ -908,7 +959,8 @@ public class MovementDebugRunner : MonoBehaviour
         Piece screen = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         board.PlacePiece(screen, screen.Position);
@@ -931,13 +983,15 @@ public class MovementDebugRunner : MonoBehaviour
         Piece cannon = new Piece(
             PieceType.Cannon,
             PieceOwner.Player,
-            new BoardPosition(2, 0)
+            new BoardPosition(2, 0),
+            0
         );
 
         Piece screen = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 1)
+            new BoardPosition(2, 1),
+            0
         );
 
         board.PlacePiece(cannon, cannon.Position);

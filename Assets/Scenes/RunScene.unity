@@ -1474,13 +1474,13 @@ GameObject:
   m_Component:
   - component: {fileID: 456220534}
   - component: {fileID: 456220548}
-  - component: {fileID: 456220533}
-  - component: {fileID: 456220535}
-  - component: {fileID: 456220540}
+  - component: {fileID: 456220554}
+  - component: {fileID: 456220553}
+  - component: {fileID: 456220552}
   - component: {fileID: 456220539}
-  - component: {fileID: 456220538}
+  - component: {fileID: 456220551}
   - component: {fileID: 456220537}
-  - component: {fileID: 456220536}
+  - component: {fileID: 456220550}
   - component: {fileID: 456220541}
   - component: {fileID: 456220542}
   - component: {fileID: 456220543}
@@ -1488,6 +1488,7 @@ GameObject:
   - component: {fileID: 456220545}
   - component: {fileID: 456220546}
   - component: {fileID: 456220547}
+  - component: {fileID: 456220555}
   - component: {fileID: 456220549}
   m_Layer: 0
   m_Name: DebugRunner
@@ -1496,18 +1497,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &456220533
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 456220532}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04fb141287ee422468be1fda2f172269, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BoardDebugRunner
 --- !u!4 &456220534
 Transform:
   m_ObjectHideFlags: 0
@@ -1523,30 +1512,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &456220535
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 456220532}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c31449a9afae0ef438c7a478261d9c8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MovementDebugRunner
---- !u!114 &456220536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 456220532}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1616235085ff17743ac0f3feab7f3fc0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TurnDebugRunner
 --- !u!114 &456220537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1559,18 +1524,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cb2997430e034f4fba6ac54f63240f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunManagerDebugRunner
---- !u!114 &456220538
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 456220532}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddfadb41401cc604faae0002e0536ec3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyAIDebugRunner
 --- !u!114 &456220539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1583,18 +1536,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9487f01230313e4469ace5c90eb7e3d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleSetupDebugRunner
---- !u!114 &456220540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 456220532}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d2dcb5032fbf75409468e2bd7355fe7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BattleManagerDebugRunner
 --- !u!114 &456220541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1704,6 +1645,78 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AugmentUIDebugRunner
   _runController: {fileID: 1273508885}
+--- !u!114 &456220550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a81468fa0fcc6343866d40cc107149c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnDebugRunner
+--- !u!114 &456220551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12acee75b4378ec4495ef042b3900423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAIDebugRunner
+--- !u!114 &456220552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40e815a196822274397efc3f64a78fdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleManagerDebugRunner
+--- !u!114 &456220553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc63747682c228a40842c1fd61c461fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovementDebugRunner
+--- !u!114 &456220554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1e299b98ee4bbb4f9853176d4eb9e99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoardDebugRunner
+--- !u!114 &456220555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456220532}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 745a8432b15b12d48bd706a8168cb918, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PieceInstanceIdDebugRunner
 --- !u!1 &461900718
 GameObject:
   m_ObjectHideFlags: 0

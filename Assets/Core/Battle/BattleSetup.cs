@@ -64,28 +64,28 @@ public static class BattleSetup
             return false;
         }
 
-        List<PieceType> pieceTypes = playerArmy.GetOwnedPieceTypes();
+        List<ArmyPiece> armyPieces = playerArmy.GetOwnedPieces();
 
-        if (pieceTypes.Count > mapPreset.PlayerDeployPositions.Count)
+        if (armyPieces.Count > mapPreset.PlayerDeployPositions.Count)
         {
-            Debug.LogError(
-                $"BattleSetup failed: player piece count({pieceTypes.Count}) is greater than player deploy position count({mapPreset.PlayerDeployPositions.Count})."
-            );
+            Debug.LogError($"BattleSetup failed: player piece count({armyPieces.Count}) " + $"is greater than player deploy position count" + $"({mapPreset.PlayerDeployPositions.Count}).");
+
             return false;
         }
 
-        for (int i = 0; i < pieceTypes.Count; i++)
+        for (int i = 0; i < armyPieces.Count; i++)
         {
-            PieceType type = pieceTypes[i];
+            ArmyPiece armyPiece = armyPieces[i];
             BoardPosition position = mapPreset.PlayerDeployPositions[i];
 
-            Piece piece = new Piece(type, PieceOwner.Player, position);
+            Piece piece = new Piece(armyPiece.Type, PieceOwner.Player, position, armyPiece.InstanceId);
 
             bool placed = board.PlacePiece(piece, position);
 
             if (!placed)
             {
-                Debug.LogError($"BattleSetup failed: could not place player piece {type} at {position}.");
+                Debug.LogError($"BattleSetup failed: could not place player piece " + $"{armyPiece.Type} at {position}.");
+
                 return false;
             }
         }
@@ -108,7 +108,7 @@ public static class BattleSetup
             int actualY = mapPreset.Height - mapPreset.DeployRows + deployPosition.Y;
             BoardPosition actualPosition = new BoardPosition(actualX, actualY);
             
-            Piece enemyPiece = new Piece(enemyPieceData.Type, PieceOwner.Enemy, actualPosition);
+            Piece enemyPiece = new Piece(enemyPieceData.Type, PieceOwner.Enemy, actualPosition, null);
 
 
             bool placed = board.PlacePiece(enemyPiece, actualPosition);

@@ -150,29 +150,34 @@ public class Shop
         return false;
     }
 
-    public bool SellPiece(int index)
+    public bool SellPiece(int armyPieceId)
     {
-        if(index < 0 || index >= _playerArmy.PieceCount)
+        ArmyPiece armyPiece = _playerArmy.GetPieceById(armyPieceId);
+
+        if (armyPiece == null)
         {
             return false;
         }
 
-        List<PieceType> ownedPieceTypes = _playerArmy.GetOwnedPieceTypes();
-        int? price = PieceCatalog.GetSellPrice(ownedPieceTypes[index]);
+        if (armyPiece.Type == PieceType.King)
+        {
+            return false;
+        }
+
+        int? price = PieceCatalog.GetSellPrice(armyPiece.Type);
 
         if (price == null)
         {
             return false;
         }
 
-        if (_playerArmy.RemovePieceAt(index))
+        if (!_playerArmy.RemovePieceById(armyPieceId))
         {
-            _runManager.AddGold(price.Value);
-
-            return true;
+            return false;
         }
-        
-        return false;
+
+        _runManager.AddGold(price.Value);
+        return true;
     }
 
     public bool BuyPopulation()

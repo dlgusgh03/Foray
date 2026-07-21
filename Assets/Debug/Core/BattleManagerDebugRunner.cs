@@ -23,19 +23,22 @@ public class BattleManagerDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(0, 0)
+            new BoardPosition(0, 0),
+            0
         );
 
         Piece playerSoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemyKing = new Piece(
             PieceType.King,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(playerKing, playerKing.Position);
@@ -64,25 +67,29 @@ public class BattleManagerDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(0, 0)
+            new BoardPosition(0, 0),
+            0
         );
 
         Piece playerSoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemyKing = new Piece(
             PieceType.King,
             PieceOwner.Enemy,
-            new BoardPosition(4, 4)
+            new BoardPosition(4, 4),
+            null
         );
 
         Piece enemySoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(0, 1)
+            new BoardPosition(0, 1),
+            null
         );
 
         board.PlacePiece(playerKing, playerKing.Position);
@@ -115,19 +122,22 @@ public class BattleManagerDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(0, 0)
+            new BoardPosition(0, 0),
+            0
         );
 
         Piece playerSoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemyKing = new Piece(
             PieceType.King,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         board.PlacePiece(playerKing, playerKing.Position);
@@ -161,25 +171,29 @@ public class BattleManagerDebugRunner : MonoBehaviour
         Piece playerKing = new Piece(
             PieceType.King,
             PieceOwner.Player,
-            new BoardPosition(0, 0)
+            new BoardPosition(0, 0),
+            0
         );
 
         Piece playerSoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Player,
-            new BoardPosition(2, 2)
+            new BoardPosition(2, 2),
+            0
         );
 
         Piece enemyKing = new Piece(
             PieceType.King,
             PieceOwner.Enemy,
-            new BoardPosition(2, 3)
+            new BoardPosition(2, 3),
+            null
         );
 
         Piece enemySoldier = new Piece(
             PieceType.Soldier,
             PieceOwner.Enemy,
-            new BoardPosition(4, 4)
+            new BoardPosition(4, 4),
+            null
         );
 
         board.PlacePiece(playerKing, playerKing.Position);
