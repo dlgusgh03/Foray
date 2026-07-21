@@ -28,22 +28,15 @@ public class OwnedAugmentUI : MonoBehaviour
         _tooltip.Hide();
     }
 
-    public void Refresh(IReadOnlyList<Augment> ownedAugments)
+    public void Refresh(IReadOnlyList<Augment> augments)
     {
-        ClearSelection();
-
         for (int i = 0; i < _slots.Length; i++)
         {
-            bool hasAugment = i < ownedAugments.Count;
+            _slots[i].gameObject.SetActive(true);
 
-            _slots[i].gameObject.SetActive(hasAugment);
+            Augment augment = i < augments.Count ? augments[i] : null;
 
-            if (!hasAugment)
-            {
-                continue;
-            }
-
-            _slots[i].Refresh(ownedAugments[i]);
+            _slots[i].Refresh(augment);
         }
     }
 
@@ -165,9 +158,7 @@ public class OwnedAugmentUI : MonoBehaviour
 
     private void RefreshTooltip()
     {
-        int displayIndex = _hoveredSlotIndex >= 0
-            ? _hoveredSlotIndex
-            : _selectedSlotIndex;
+        int displayIndex = _hoveredSlotIndex >= 0 ? _hoveredSlotIndex : _selectedSlotIndex;
 
         if (displayIndex < 0)
         {
@@ -177,6 +168,12 @@ public class OwnedAugmentUI : MonoBehaviour
 
         OwnedAugmentSlotUI slot = _slots[displayIndex];
         Augment augment = slot.Augment;
+
+        if (augment == null)
+        {
+            _tooltip.Hide();
+            return;
+        }
 
         _tooltip.transform.position = slot.TooltipPosition;
         _tooltip.Show(augment);

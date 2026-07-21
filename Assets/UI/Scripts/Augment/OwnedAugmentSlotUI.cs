@@ -8,6 +8,8 @@ public class OwnedAugmentSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerE
     [SerializeField] private Image _iconImage;
     [SerializeField] private Image _rarityBorder;
     [SerializeField] private Sprite _defaultIcon;
+    [SerializeField] private Color _emptyIconColor = new Color(1f, 1f, 1f, 0.15f);
+    [SerializeField] private Color _filledIconColor = Color.white;
     [SerializeField] private float _expandedScale = 1.08f;
     [SerializeField] private RectTransform _tooltipAnchor;
 
@@ -30,13 +32,23 @@ public class OwnedAugmentSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         _augment = augment;
 
+        _isHovered = false;
+        _isSelected = false;
+        RefreshScale();
+
         if (augment == null)
         {
-            _iconImage.sprite = null;
+            _iconImage.sprite = _defaultIcon;
+            _iconImage.color = _emptyIconColor;
+
+            _iconImage.gameObject.SetActive(true);
+            _rarityBorder.gameObject.SetActive(false);
             return;
         }
 
         _iconImage.sprite = augment.Icon != null ? augment.Icon : _defaultIcon;
+
+        _iconImage.color = _filledIconColor;
 
         _iconImage.gameObject.SetActive(true);
         _rarityBorder.gameObject.SetActive(true);
@@ -63,6 +75,11 @@ public class OwnedAugmentSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (_augment == null)
+        {
+            return;
+        }
+
         _isHovered = false;
         RefreshScale();
 
