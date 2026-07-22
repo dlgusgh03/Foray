@@ -8,6 +8,7 @@ public class RunController : MonoBehaviour
     [SerializeField] private RunUIController _runUIController;
     [SerializeField] private RunStatusUI _runStatusUI;
     [SerializeField] private OwnedAugmentUI _ownedAugmentUI;
+    [SerializeField] private OwnedPieceSummaryUI _ownedPieceSummaryUI;
     [SerializeField] private AugmentSelectionUI _augmentSelectionUI;
     [SerializeField] private AugmentReplacementUI _augmentReplacementUI;
 
@@ -23,9 +24,7 @@ public class RunController : MonoBehaviour
         _runManager = new RunManager();
         _runManager.StartRun();
 
-        _runUIController.Refresh(_runManager.CurrentState);
-        _runStatusUI.Refresh(_runManager);
-        _ownedAugmentUI.Refresh(_runManager.GetCurrentAugments());
+        RefreshRunUI();
     }
 
     public bool OnCellClicked(BoardPosition position)
@@ -179,6 +178,7 @@ public class RunController : MonoBehaviour
         _runUIController.Refresh(_runManager.CurrentState);
         _runStatusUI.Refresh(_runManager);
         _ownedAugmentUI.Refresh(_runManager.GetCurrentAugments());
+        _ownedPieceSummaryUI.Refresh(_runManager.PlayerArmy);
     }
 
 #if UNITY_EDITOR

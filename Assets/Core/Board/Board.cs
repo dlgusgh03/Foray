@@ -30,10 +30,7 @@ public class Board
 
     public bool IsInside(BoardPosition position)
     {
-        return position.X >= 0 &&
-               position.X < _width &&
-               position.Y >= 0 &&
-               position.Y < _height;
+        return position.X >= 0 && position.X < _width && position.Y >= 0 && position.Y < _height;
     }
 
     public BoardCell GetCell(BoardPosition position)
